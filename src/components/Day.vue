@@ -15,7 +15,7 @@
 	const props = defineProps(['day']);
 
 	let day_of_week = format(props.day, 'EEEEEE', { locale: ptBR });
-	let day_number = format(props.day, 'dd', { locale: ptBR });
+	let day_number = format(props.day, 'd', { locale: ptBR });
 </script>
 <style scoped>
 	.day {
@@ -31,6 +31,8 @@
 		padding: 4px;
 		border-radius: 50%;
 		transition: 0.15s;
+		aspect-ratio: 1 / 1;
+		text-align: center;
 	}
 	.day.selected .day-number {
 		background-color: #302571;
