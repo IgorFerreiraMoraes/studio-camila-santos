@@ -25,6 +25,14 @@
 		IonToolbar,
 	} from '@ionic/vue';
 	import DatePicker from '../components/DatePicker.vue';
+	import { auth } from '../firebase';
+	import { onAuthStateChanged } from 'firebase/auth';
+	import { useRouter } from 'vue-router';
+
+	const router = useRouter();
+	onAuthStateChanged(auth, (user) => {
+		if (!user) router.push('/login');
+	});
 </script>
 
 <style scoped>
