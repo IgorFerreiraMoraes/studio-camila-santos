@@ -3,7 +3,7 @@
 		<p>
 			{{ day_of_week }}
 		</p>
-		<p>
+		<p class="day-number">
 			{{ day_number }}
 		</p>
 	</div>
@@ -26,6 +26,15 @@
 		padding: 12px 0;
 		border-radius: 8px;
 		font-family: 'Montserrat', sans-serif;
+	}
+	.day .day-number {
+		padding: 4px;
+		border-radius: 50%;
+		transition: 0.15s;
+	}
+	.day.selected .day-number {
+		background-color: #302571;
+		color: #fff;
 	}
 	.day:hover {
 		background-color: #f4f5f8;

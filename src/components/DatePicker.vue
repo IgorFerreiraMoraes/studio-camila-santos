@@ -19,6 +19,8 @@
 			v-for="day in days_in_selected_month"
 			:key="day.getTime()"
 			:day="day"
+			:class="{ selected: same_day(selected_day, day) }"
+			@click="selected_day = day"
 		></Day>
 	</div>
 </template>
@@ -30,6 +32,7 @@
 		eachDayOfInterval,
 		startOfMonth,
 		endOfMonth,
+		getDate,
 	} from 'date-fns';
 	import { ptBR } from 'date-fns/locale';
 	import { ref, watch } from 'vue';
@@ -74,6 +77,17 @@
 			month_index.value++;
 		}
 	}
+
+	function same_day(day1, day2) {
+		return (
+			day1.getFullYear() == day2.getFullYear() &&
+			day1.getMonth() == day2.getMonth() &&
+			day1.getDate() == day2.getDate()
+		);
+	}
+
+	const selected_day = ref('');
+	selected_day.value = today;
 </script>
 <style scoped>
 	#select-month {
