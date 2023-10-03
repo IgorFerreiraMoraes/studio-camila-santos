@@ -87,8 +87,22 @@
 	}
 
 	.scroll-horizontal {
-		display: flex;
-		flex-direction: column;
+		display: grid;
+		grid-auto-flow: column;
+		grid-auto-columns: 12%;
+		overflow-x: scroll;
+		padding-bottom: 6px;
 		gap: 8px;
+	}
+	::-webkit-scrollbar {
+		width: 4px;
+		height: 4px;
+	}
+	::-webkit-scrollbar-thumb {
+		background-color: #f4f5f8;
+		border-radius: 2px;
+	}
+	::-webkit-scrollbar-thumb:hover {
+		background-color: #edeef0;
 	}
 </style>

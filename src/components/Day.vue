@@ -1,7 +1,11 @@
 <template>
 	<div class="day">
-		{{ day_number }}
-		{{ day_of_week }}
+		<p>
+			{{ day_of_week }}
+		</p>
+		<p>
+			{{ day_number }}
+		</p>
 	</div>
 </template>
 <script setup>
@@ -15,8 +19,19 @@
 </script>
 <style scoped>
 	.day {
-		background-color: red;
-		color: #fff;
+		display: flex;
+		flex-direction: column;
+		gap: 12px;
+		place-items: center;
+		padding: 12px 0;
+		border-radius: 8px;
 		font-family: 'Montserrat', sans-serif;
+	}
+	.day:hover {
+		background-color: #f4f5f8;
+		cursor: pointer;
+	}
+	.day p {
+		margin: 0;
 	}
 </style>
