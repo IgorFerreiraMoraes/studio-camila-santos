@@ -25,7 +25,9 @@ import './theme/variables.css';
 import './theme/base.css';
 import './firebase.js';
 
-const app = createApp(App).use(IonicVue, { mode: 'ios' }).use(router);
+const app = createApp(App)
+	.use(IonicVue, { mode: 'ios', swipeBackEnabled: false })
+	.use(router);
 
 router.isReady().then(() => {
 	app.mount('#app');
