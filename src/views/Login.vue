@@ -19,7 +19,11 @@
 				<ion-icon slot="start" :icon="logoGoogle"></ion-icon>
 				Entrar com Google
 			</ion-button>
-			<ion-button color="tertiary" expand="block">
+			<ion-button
+				color="tertiary"
+				expand="block"
+				@click="sign_in(facebook)"
+			>
 				<ion-icon slot="start" :icon="logoFacebook"></ion-icon>
 				Entrar com Facebook
 			</ion-button>
@@ -43,12 +47,15 @@
 		IonToolbar,
 		IonTitle,
 		IonContent,
+		IonButton,
+		IonIcon,
 	} from '@ionic/vue';
 	import { useRouter } from 'vue-router';
 	import { logoGoogle, logoFacebook, logoInstagram } from 'ionicons/icons';
 	import { auth } from '../firebase';
 	import {
 		GoogleAuthProvider,
+		FacebookAuthProvider,
 		signInWithPopup,
 		setPersistence,
 		browserLocalPersistence,
@@ -58,12 +65,14 @@
 	const router = useRouter();
 	onAuthStateChanged(auth, (user) => {
 		if (user) {
+			console.log(user);
 			router.push('/');
 		}
 	});
 
 	auth.languageCode = 'it';
 	const google = new GoogleAuthProvider();
+	const facebook = new FacebookAuthProvider();
 
 	function sign_in(provider) {
 		setPersistence(auth, browserLocalPersistence).then(() => {
