@@ -23,14 +23,73 @@
 		IonPage,
 		IonTitle,
 		IonToolbar,
+		alertController,
 	} from '@ionic/vue';
 	import DatePicker from '../components/DatePicker.vue';
 	import { auth } from '../firebase';
 	import { onAuthStateChanged } from 'firebase/auth';
 	import { useRouter } from 'vue-router';
 
+	async function check_birthday() {
+		let has_birthday = false;
+		const birthday_alert = await alertController.create({
+			header: 'Quando é Seu Aniversário?',
+			subHeader: 'Receba uma mensagem especial no dia!',
+			inputs: [
+				{
+					name: 'month',
+					type: 'number',
+					placeholder: 'Mês (1 - 12)',
+					min: 1,
+					max: 12,
+				},
+				{
+					name: 'day',
+					type: 'number',
+					placeholder: 'Dia (1 - 31)',
+					min: 1,
+					max: 31,
+				},
+			],
+			buttons: [
+				{
+					text: 'pronto',
+					role: 'submit',
+					handler: (data) => {
+						if (valid_date(data.month, data.day)) {
+							return true;
+						}
+						return false;
+					},
+				},
+			],
+			backdropDismiss: false,
+			translucent: true,
+		});
+		if (!has_birthday) await birthday_alert.present();
+		return;
+	}
+	function valid_date(month, day) {
+		month = Number(month);
+
+		if (
+			!month ||
+			!day ||
+			month < 1 ||
+			month > 12 ||
+			day < 1 ||
+			day > 31 ||
+			([4, 6, 9, 11].includes(month) && day > 30) ||
+			(month == 2 && day > 28)
+		)
+			return false;
+
+		return true;
+	}
+
 	const router = useRouter();
 	onAuthStateChanged(auth, (user) => {
+		if (user) check_birthday();
 		if (!user) router.push('/login');
 	});
 </script>
