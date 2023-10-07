@@ -12,6 +12,7 @@
 				</ion-toolbar>
 			</ion-header>
 			<date-picker></date-picker>
+			<time-slots></time-slots>
 		</ion-content>
 	</ion-page>
 </template>
@@ -30,6 +31,7 @@
 	import { onAuthStateChanged } from 'firebase/auth';
 	import { doc, setDoc, getDoc } from 'firebase/firestore';
 	import { useRouter } from 'vue-router';
+	import TimeSlots from '../components/TimeSlots.vue';
 
 	async function check_birthday() {
 		const doc_snap = await getDoc(
@@ -117,5 +119,11 @@
 		font-size: 1.3rem;
 		letter-spacing: -0.5px;
 		color: #302571;
+		padding: 0;
+	}
+</style>
+<style>
+	* {
+		font-family: 'Montserrat', sans-serif;
 	}
 </style>

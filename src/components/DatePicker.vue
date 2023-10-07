@@ -93,7 +93,6 @@
 	#select-month {
 		display: flex;
 		gap: 0.5rem;
-		font-family: 'Montserrat', sans-serif;
 	}
 	#select-month > button {
 		background: none;
