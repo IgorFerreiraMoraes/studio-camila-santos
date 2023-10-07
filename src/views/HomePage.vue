@@ -26,12 +26,17 @@
 		alertController,
 	} from '@ionic/vue';
 	import DatePicker from '../components/DatePicker.vue';
-	import { auth } from '../firebase';
+	import { auth, database } from '../firebase';
 	import { onAuthStateChanged } from 'firebase/auth';
+	import { doc, setDoc, getDoc } from 'firebase/firestore';
 	import { useRouter } from 'vue-router';
 
 	async function check_birthday() {
-		let has_birthday = false;
+		const doc_snap = await getDoc(
+			doc(database, 'users', auth.currentUser.uid)
+		);
+		let has_birthday = doc_snap.exists();
+
 		const birthday_alert = await alertController.create({
 			header: 'Quando é Seu Aniversário?',
 			subHeader: 'Receba uma mensagem especial no dia!',
@@ -57,6 +62,18 @@
 					role: 'submit',
 					handler: (data) => {
 						if (valid_date(data.month, data.day)) {
+							const user = auth.currentUser;
+							console.log(user.uid);
+							console.log(user.displayName);
+
+							const user_doc = doc(database, 'users', user.uid);
+							setDoc(user_doc, {
+								birth_day: data.day,
+								birth_month: data.month,
+								id: user.uid,
+								name: user.displayName,
+							});
+
 							return true;
 						}
 						return false;
