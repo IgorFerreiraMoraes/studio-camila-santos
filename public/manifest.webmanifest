@@ -1,0 +1,19 @@
+{
+	"name": "Studio Camila Santos",
+	"short_name": "Camila Santos",
+	"description": "Agende suas sessões no salão com o aplicativo",
+	"icons": [
+		{
+			"src": "/icon.svg",
+			"sizes": "1024x1024",
+			"type": "image/svg",
+			"purpose": "any maskable"
+		}
+	],
+	"theme_color": "#302571",
+	"background_color": "#fffffff",
+	"display": "standalone",
+	"scope": "/",
+	"start_url": "/",
+	"orientation": "portrait"
+}
