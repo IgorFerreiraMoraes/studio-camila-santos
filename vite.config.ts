@@ -14,13 +14,13 @@ const manifest: Partial<VitePWAOptions> = {
 		icons: [
 			{
 				src: '/icon.svg',
-				sizes: '1024x1024',
-				type: 'image/svg',
+				sizes: 'any',
+				type: 'image/svg+xml',
 				purpose: 'any maskable',
 			},
 		],
 		theme_color: '#302571',
-		background_color: '#fffffff',
+		background_color: '#ffffff',
 		display: 'standalone',
 		scope: '/',
 		start_url: '/',
