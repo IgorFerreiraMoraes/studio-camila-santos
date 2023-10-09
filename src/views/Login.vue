@@ -97,8 +97,6 @@
 					handler: (data) => {
 						if (valid_date(data.month, data.day)) {
 							const user = auth.currentUser;
-							console.log(user.uid);
-							console.log(user.displayName);
 
 							const user_doc = doc(database, 'users', user.uid);
 							setDoc(user_doc, {
