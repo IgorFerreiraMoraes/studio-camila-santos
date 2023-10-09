@@ -11,8 +11,8 @@
 					<ion-title size="medium">Agendamento</ion-title>
 				</ion-toolbar>
 			</ion-header>
-			<date-picker></date-picker>
-			<time-slots></time-slots>
+			<date-picker @select_day="(d) => (selected_day = d)"></date-picker>
+			<time-slots :selected_day="selected_day"></time-slots>
 		</ion-content>
 	</ion-page>
 </template>
@@ -25,16 +25,19 @@
 		IonTitle,
 		IonToolbar,
 	} from '@ionic/vue';
-	import DatePicker from '../components/DatePicker.vue';
+	import { useRouter } from 'vue-router';
+	import { ref } from 'vue';
 	import { auth } from '../firebase';
 	import { onAuthStateChanged } from 'firebase/auth';
-	import { useRouter } from 'vue-router';
 	import TimeSlots from '../components/TimeSlots.vue';
+	import DatePicker from '../components/DatePicker.vue';
 
 	const router = useRouter();
 	onAuthStateChanged(auth, (user) => {
 		if (!user) router.push('/login');
 	});
+
+	const selected_day = ref();
 </script>
 
 <style scoped>

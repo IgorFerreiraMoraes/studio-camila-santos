@@ -32,11 +32,12 @@
 		eachDayOfInterval,
 		startOfMonth,
 		endOfMonth,
-		getDate,
 	} from 'date-fns';
 	import { ptBR } from 'date-fns/locale';
 	import { ref, watch } from 'vue';
 	import Day from './Day.vue';
+
+	const emit = defineEmits(['select_day']);
 
 	const today = new Date();
 	const schedule_limit = addMonths(today, 6);
@@ -87,7 +88,10 @@
 	}
 
 	const selected_day = ref('');
-	selected_day.value = today;
+	watch(selected_day, () => {
+		emit('select_day', selected_day.value);
+	});
+	selected_day.value = days_in_selected_month.value[0];
 </script>
 <style scoped>
 	#select-month {
@@ -102,7 +106,7 @@
 	.scroll-horizontal {
 		display: grid;
 		grid-auto-flow: column;
-		grid-auto-columns: 12%;
+		grid-auto-columns: 15%;
 		overflow-x: scroll;
 		padding-bottom: 6px;
 		gap: 8px;
