@@ -6,12 +6,15 @@ import Thanks from '../views/Thanks.vue';
 const routes = [
 	{
 		path: '/',
+		component: () => import('@/views/Tabs.vue'),
+		children: [
+			{
+				path: 'home',
+				name: 'Home',
+				component: HomePage,
+			},
+		],
 		redirect: '/home',
-	},
-	{
-		path: '/home',
-		name: 'Home',
-		component: HomePage,
 	},
 	{
 		path: '/login',
