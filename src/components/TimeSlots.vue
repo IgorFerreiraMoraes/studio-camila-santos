@@ -12,17 +12,17 @@
 	</ion-select>
 	<ul>
 		<li
-			v-for="slot in available_slots"
-			:key="slot.id"
-			:class="{ selected: selected_slots.includes(slot.id) }"
-			@click="select_slots(slot)"
+			v-for="[slot_id, slot] in available_slots"
+			:key="slot_id"
+			:class="{ selected: selected_slots.includes(slot_id) }"
+			@click="select_slots(slot_id)"
 		>
 			<p>{{ slot.start }} - {{ slot.finish }}</p>
 		</li>
 	</ul>
-	<ion-fab vertical="bottom" horizontal="center">
+	<ion-fab slot="fixed" vertical="bottom" horizontal="center">
 		<ion-fab-button color="tertiary" @click="make_appointment()">
-			<ion-icon :icon="calendarNumberOutline"></ion-icon>
+			<ion-icon :icon="addOutline"></ion-icon>
 		</ion-fab-button>
 	</ion-fab>
 </template>
@@ -35,15 +35,21 @@
 		IonFabButton,
 		IonIcon,
 	} from '@ionic/vue';
-	import { calendarNumberOutline } from 'ionicons/icons';
+	import { addOutline } from 'ionicons/icons';
 	import { database, auth } from '../firebase';
-	import { doc, getDoc, setDoc } from 'firebase/firestore';
+	import {
+		doc,
+		getDoc,
+		setDoc,
+		updateDoc,
+		arrayUnion,
+	} from 'firebase/firestore';
 	import { useRouter } from 'vue-router';
 	const router = useRouter();
 
 	const props = defineProps(['selected_day']);
 
-	let available_slots = ref({});
+	const available_slots = ref(new Map());
 
 	const services = [
 		{ name: 'Manicure', duration: 0 },
@@ -53,17 +59,17 @@
 	const selected_slots = ref([]);
 	const selected_service = ref();
 
-	function select_slots(slot) {
+	function select_slots(slot_id) {
 		if (
 			!selected_service.value ||
 			(selected_service.value.duration == 1 &&
-				!available_slots.value[slot.id + 1])
+				!available_slots.value.get(slot_id + 1))
 		)
 			return;
-		selected_slots.value = [slot.id];
+		selected_slots.value = [slot_id];
 		if (selected_service.value.duration > 0)
 			selected_slots.value.push(
-				slot.id + selected_service.value.duration
+				slot_id + selected_service.value.duration
 			);
 	}
 	function select_service(event) {
@@ -73,134 +79,183 @@
 
 	let selected_day_doc;
 	watch(props, async () => {
-		available_slots = ref({
-			1: {
-				id: 1,
-				start: '7:00',
-				finish: '7:30',
-			},
-			2: {
-				id: 2,
-				start: '7:30',
-				finish: '8:00',
-			},
-			3: {
-				id: 3,
-				start: '8:00',
-				finish: '8:30',
-			},
-			4: {
-				id: 4,
-				start: '8:30',
-				finish: '9:00',
-			},
-			5: {
-				id: 5,
-				start: '9:00',
-				finish: '9:30',
-			},
-			6: {
-				id: 6,
-				start: '9:30',
-				finish: '10:00',
-			},
-			7: {
-				id: 7,
-				start: '10:00',
-				finish: '10:30',
-			},
-			8: {
-				id: 8,
-				start: '10:30',
-				finish: '11:00',
-			},
-			9: {
-				id: 9,
-				start: '11:00',
-				finish: '11:30',
-			},
-			10: {
-				id: 10,
-				start: '11:30',
-				finish: '12:00',
-			},
-			11: {
-				id: 11,
-				start: '12:00',
-				finish: '12:30',
-			},
-			12: {
-				id: 12,
-				start: '12:30',
-				finish: '13:00',
-			},
-			13: {
-				id: 13,
-				start: '13:00',
-				finish: '13:30',
-			},
-			14: {
-				id: 14,
-				start: '13:30',
-				finish: '14:00',
-			},
-			15: {
-				id: 15,
-				start: '14:00',
-				finish: '14:30',
-			},
-			16: {
-				id: 16,
-				start: '14:30',
-				finish: '15:00',
-			},
-			17: {
-				id: 17,
-				start: '15:00',
-				finish: '15:30',
-			},
-			18: {
-				id: 18,
-				start: '15:30',
-				finish: '16:00',
-			},
-			19: {
-				id: 19,
-				start: '16:00',
-				finish: '16:30',
-			},
-			20: {
-				id: 20,
-				start: '16:30',
-				finish: '17:00',
-			},
-			21: {
-				id: 21,
-				start: '17:00',
-				finish: '17:30',
-			},
-			22: {
-				id: 22,
-				start: '17:30',
-				finish: '18:00',
-			},
-			23: {
-				id: 23,
-				start: '18:00',
-				finish: '18:30',
-			},
-			24: {
-				id: 24,
-				start: '18:30',
-				finish: '19:00',
-			},
-		});
+		available_slots.value = new Map([
+			[
+				1,
+				{
+					start: '7:00',
+					finish: '7:30',
+				},
+			],
+			[
+				2,
+				{
+					start: '7:30',
+					finish: '8:00',
+				},
+			],
+			[
+				3,
+				{
+					start: '8:00',
+					finish: '8:30',
+				},
+			],
+			[
+				4,
+				{
+					start: '8:30',
+					finish: '9:00',
+				},
+			],
+			[
+				5,
+				{
+					start: '9:00',
+					finish: '9:30',
+				},
+			],
+			[
+				6,
+				{
+					start: '9:30',
+					finish: '10:00',
+				},
+			],
+			[
+				7,
+				{
+					start: '10:00',
+					finish: '10:30',
+				},
+			],
+			[
+				8,
+				{
+					start: '10:30',
+					finish: '11:00',
+				},
+			],
+			[
+				9,
+				{
+					start: '11:00',
+					finish: '11:30',
+				},
+			],
+			[
+				10,
+				{
+					start: '11:30',
+					finish: '12:00',
+				},
+			],
+			[
+				11,
+				{
+					start: '12:00',
+					finish: '12:30',
+				},
+			],
+			[
+				12,
+				{
+					start: '12:30',
+					finish: '13:00',
+				},
+			],
+			[
+				13,
+				{
+					start: '13:00',
+					finish: '13:30',
+				},
+			],
+			[
+				14,
+				{
+					start: '13:30',
+					finish: '14:00',
+				},
+			],
+			[
+				15,
+				{
+					start: '14:00',
+					finish: '14:30',
+				},
+			],
+			[
+				16,
+				{
+					start: '14:30',
+					finish: '15:00',
+				},
+			],
+			[
+				17,
+				{
+					start: '15:00',
+					finish: '15:30',
+				},
+			],
+			[
+				18,
+				{
+					start: '15:30',
+					finish: '16:00',
+				},
+			],
+			[
+				19,
+				{
+					start: '16:00',
+					finish: '16:30',
+				},
+			],
+			[
+				20,
+				{
+					start: '16:30',
+					finish: '17:00',
+				},
+			],
+			[
+				21,
+				{
+					start: '17:00',
+					finish: '17:30',
+				},
+			],
+			[
+				22,
+				{
+					start: '17:30',
+					finish: '18:00',
+				},
+			],
+			[
+				23,
+				{
+					start: '18:00',
+					finish: '18:30',
+				},
+			],
+			[
+				24,
+				{
+					start: '18:30',
+					finish: '19:00',
+				},
+			],
+		]);
+
 		selected_day_doc = await getDoc(
 			doc(database, 'occupied_slots', props.selected_day.toString())
 		);
 		if (selected_day_doc.exists()) {
 			for (const slot of selected_day_doc.data().slots) {
-				delete available_slots.value[slot.taken_slots];
+				available_slots.value.delete(slot.taken_slot);
 			}
 		}
 	});
@@ -214,7 +269,7 @@
 				client_id: auth.currentUser.uid,
 				client_name: auth.currentUser.displayName,
 				service: selected_service.value,
-				taken_slots: slot,
+				taken_slot: slot,
 			});
 		}
 
@@ -225,9 +280,16 @@
 					slots: slots_to_occupy,
 				}
 			);
-			router.push('/thanks');
 		} else {
+			const db_slots = selected_day_doc.data().slots;
+			await setDoc(
+				doc(database, 'occupied_slots', props.selected_day.toString()),
+				{
+					slots: db_slots.concat(slots_to_occupy),
+				}
+			);
 		}
+		router.push('/thanks');
 	}
 </script>
 <style scoped>
@@ -242,7 +304,9 @@
 	ul {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		padding: 0 24px;
+		height: 35%;
+		overflow-y: scroll;
+		padding: 0 24px 8px 24px;
 		gap: 8px;
 	}
 	li {
