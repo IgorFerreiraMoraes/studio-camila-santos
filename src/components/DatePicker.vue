@@ -25,6 +25,7 @@
 	</div>
 </template>
 <script setup>
+	import { IonIcon } from '@ionic/vue';
 	import { chevronBack, chevronForward } from 'ionicons/icons';
 	import {
 		format,
@@ -40,7 +41,7 @@
 	const emit = defineEmits(['select_day']);
 
 	const today = new Date();
-	const schedule_limit = addMonths(today, 6);
+	const schedule_limit = addMonths(today, 4);
 	const months = ref([]);
 	const days_in_month = ref([]);
 
@@ -110,16 +111,5 @@
 		overflow-x: scroll;
 		padding-bottom: 6px;
 		gap: 8px;
-	}
-	::-webkit-scrollbar {
-		width: 4px;
-		height: 4px;
-	}
-	::-webkit-scrollbar-thumb {
-		background-color: #f4f5f8;
-		border-radius: 2px;
-	}
-	::-webkit-scrollbar-thumb:hover {
-		background-color: #edeef0;
 	}
 </style>
