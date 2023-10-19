@@ -13,16 +13,21 @@
 			</ion-header>
 			<ion-list>
 				<ion-item v-for="appointment of user_dates">
-					<p class="date">
-						{{
-							formatRelative(appointment.date, new Date(), {
-								locale: ptBR,
-								addSuffix: true,
-							})
-						}}
-					</p>
-					<p class="service">{{ appointment.service }}</p>
-					<p class="time">{{ slots.get(appointment.slot) }}</p>
+					<ion-label>
+						<span class="date">
+							{{
+								format(appointment.date, `d 'de' MMM`, {
+									locale: ptBR,
+									addSuffix: true,
+								})
+							}}
+						</span>
+						<span class="service">{{ appointment.service }}</span>
+						<span class="time">
+							{{ slots.get(appointment.slot).start }} -
+							{{ slots.get(appointment.slot).finish }}
+						</span>
+					</ion-label>
 				</ion-item>
 			</ion-list>
 		</ion-content>
@@ -37,8 +42,9 @@
 		IonContent,
 		IonList,
 		IonItem,
+		IonLabel,
 	} from '@ionic/vue';
-	import { format, formatDistance, formatRelative } from 'date-fns';
+	import { format } from 'date-fns';
 	import { ptBR } from 'date-fns/locale';
 
 	import { auth } from '../firebase';
@@ -262,5 +268,22 @@
 		letter-spacing: -0.5px;
 		color: #302571;
 		padding: 0;
+	}
+	ion-label span {
+		display: block;
+	}
+	.date {
+		text-indent: 0px;
+		font-weight: 300;
+		letter-spacing: 1px;
+		font-size: 0.9rem;
+	}
+	.service {
+		font-weight: 600;
+		font-size: 1.25rem;
+		letter-spacing: -0.5px;
+	}
+	.time {
+		text-indent: 16px;
 	}
 </style>
