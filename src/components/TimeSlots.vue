@@ -272,7 +272,7 @@
 				client_id: auth.currentUser.uid,
 				client_name: auth.currentUser.displayName,
 				date: props.selected_day,
-				service: selected_service.value,
+				service: selected_service.value.name,
 				taken_slot: slot,
 			});
 		}
