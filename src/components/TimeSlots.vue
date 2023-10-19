@@ -38,19 +38,20 @@
 	import { addOutline } from 'ionicons/icons';
 	import { database, auth } from '../firebase';
 	import {
+		collection,
 		doc,
-		getDoc,
+		getDocs,
 		setDoc,
-		updateDoc,
-		arrayUnion,
+		query,
+		where,
 	} from 'firebase/firestore';
 	import { useRouter } from 'vue-router';
+
 	const router = useRouter();
 
 	const props = defineProps(['selected_day']);
 
 	const available_slots = ref(new Map());
-
 	const services = [
 		{ name: 'Manicure', duration: 0 },
 		{ name: 'Depilação Completa', duration: 1 },
@@ -77,7 +78,6 @@
 		selected_slots.value = [];
 	}
 
-	let selected_day_doc;
 	watch(props, async () => {
 		available_slots.value = new Map([
 			[
@@ -250,44 +250,31 @@
 			],
 		]);
 
-		selected_day_doc = await getDoc(
-			doc(database, 'occupied_slots', props.selected_day.toString())
+		const selected_day_query = query(
+			collection(database, 'appointments'),
+			where('date', '==', props.selected_day)
 		);
-		if (selected_day_doc.exists()) {
-			for (const slot of selected_day_doc.data().slots) {
-				available_slots.value.delete(slot.taken_slot);
-			}
-		}
+		const selected_day_snap = await getDocs(selected_day_query);
+
+		selected_day_snap.forEach((doc) => {
+			available_slots.value.delete(doc.data().taken_slot);
+		});
 	});
 
 	async function make_appointment() {
 		if (!selected_service.value || selected_slots.value.length < 1) return;
 
-		let slots_to_occupy = [];
 		for (const slot of selected_slots.value) {
-			slots_to_occupy.push({
+			const current_timestamp = new Date().getTime() + slot;
+			const appointment_id = `${auth.currentUser.uid}_${current_timestamp}`;
+
+			await setDoc(doc(database, 'appointments', appointment_id), {
 				client_id: auth.currentUser.uid,
 				client_name: auth.currentUser.displayName,
+				date: props.selected_day,
 				service: selected_service.value,
 				taken_slot: slot,
 			});
-		}
-
-		if (!selected_day_doc.exists()) {
-			await setDoc(
-				doc(database, 'occupied_slots', props.selected_day.toString()),
-				{
-					slots: slots_to_occupy,
-				}
-			);
-		} else {
-			const db_slots = selected_day_doc.data().slots;
-			await setDoc(
-				doc(database, 'occupied_slots', props.selected_day.toString()),
-				{
-					slots: db_slots.concat(slots_to_occupy),
-				}
-			);
 		}
 		router.push('/thanks');
 	}
