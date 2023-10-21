@@ -28,6 +28,9 @@
 							{{ slots.get(appointment.slot).finish }}
 						</span>
 					</ion-label>
+					<button class="delete" @click="delete_date(appointment.id)">
+						x
+					</button>
 				</ion-item>
 			</ion-list>
 		</ion-content>
@@ -55,6 +58,8 @@
 		where,
 		collection,
 		orderBy,
+		deleteDoc,
+		doc,
 	} from 'firebase/firestore';
 	import { onAuthStateChanged } from 'firebase/auth';
 	import { ref } from 'vue';
@@ -84,6 +89,11 @@
 			};
 			user_dates.value.push(user_date);
 		});
+	}
+
+	async function delete_date(id) {
+		console.log(id);
+		await deleteDoc(doc(database, 'appointments', id));
 	}
 
 	onAuthStateChanged(auth, (user) => {
@@ -272,6 +282,16 @@
 	}
 	ion-label span {
 		display: block;
+	}
+	.delete {
+		background-color: var(--ion-color-danger-tint);
+		padding: 4px 8px;
+		color: white;
+		border-radius: 6px;
+		transition: 0.1s;
+	}
+	.delete:hover {
+		background-color: var(--ion-color-danger-shade);
 	}
 	.date {
 		text-indent: 0px;
