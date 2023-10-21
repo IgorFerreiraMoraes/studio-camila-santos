@@ -16,7 +16,7 @@
 					<ion-label>
 						<span class="date">
 							{{
-								format(appointment.date, `d 'de' MMM`, {
+								format(appointment.date, `d 'de' MMMM`, {
 									locale: ptBR,
 									addSuffix: true,
 								})
@@ -77,6 +77,7 @@
 			const date_data = doc.data();
 
 			const user_date = {
+				id: doc.id,
 				date: date_data.date.toDate(),
 				service: date_data.service,
 				slot: date_data.taken_slot,
