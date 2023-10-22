@@ -53,7 +53,7 @@
 	import { auth } from '../firebase';
 	import { database } from '../firebase';
 	import {
-		getDocs,
+		onSnapshot,
 		query,
 		where,
 		collection,
@@ -62,13 +62,19 @@
 		doc,
 	} from 'firebase/firestore';
 	import { onAuthStateChanged } from 'firebase/auth';
-	import { ref } from 'vue';
+	import { reactive } from 'vue';
 	import { useRouter } from 'vue-router';
 
 	const router = useRouter();
-	const user_dates = ref([]);
 
-	async function load_dates() {
+	const user_dates = reactive([]);
+
+	onAuthStateChanged(auth, (user) => {
+		if (user) load_dates();
+		else router.push('/login');
+	});
+
+	function load_dates() {
 		const dates_collection = collection(database, 'appointments');
 		const user_dates_query = query(
 			dates_collection,
@@ -76,30 +82,26 @@
 			orderBy('date'),
 			orderBy('taken_slot')
 		);
-		const user_dates_snap = await getDocs(user_dates_query);
+		const user_dates_snap = onSnapshot(user_dates_query, (snap) => {
+			const updated_user_dates = [];
+			snap.forEach((doc) => {
+				const date_data = doc.data();
 
-		user_dates_snap.forEach((doc) => {
-			const date_data = doc.data();
-
-			const user_date = {
-				id: doc.id,
-				date: date_data.date.toDate(),
-				service: date_data.service,
-				slot: date_data.taken_slot,
-			};
-			user_dates.value.push(user_date);
+				const user_date = {
+					id: doc.id,
+					date: date_data.date.toDate(),
+					service: date_data.service,
+					slot: date_data.taken_slot,
+				};
+				updated_user_dates.push(user_date);
+			});
+			user_dates.length = 0;
+			user_dates.push(...updated_user_dates);
 		});
 	}
-
 	async function delete_date(id) {
-		console.log(id);
 		await deleteDoc(doc(database, 'appointments', id));
 	}
-
-	onAuthStateChanged(auth, (user) => {
-		if (user) load_dates();
-		else router.push('/login');
-	});
 
 	const slots = new Map([
 		[
