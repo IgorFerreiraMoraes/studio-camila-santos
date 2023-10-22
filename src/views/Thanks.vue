@@ -33,7 +33,6 @@
 
 	async function go_home() {
 		await router.push('/');
-		location.reload();
 	}
 </script>
 <style scoped>
