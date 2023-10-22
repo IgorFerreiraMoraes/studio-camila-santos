@@ -40,10 +40,10 @@
 	import {
 		collection,
 		doc,
-		getDocs,
 		setDoc,
 		query,
 		where,
+		onSnapshot,
 	} from 'firebase/firestore';
 	import { useRouter } from 'vue-router';
 
@@ -254,10 +254,10 @@
 			collection(database, 'appointments'),
 			where('date', '==', props.selected_day)
 		);
-		const selected_day_snap = await getDocs(selected_day_query);
-
-		selected_day_snap.forEach((doc) => {
-			available_slots.value.delete(doc.data().taken_slot);
+		const selected_day_snap = onSnapshot(selected_day_query, (snap) => {
+			snap.forEach((doc) => {
+				available_slots.value.delete(doc.data().taken_slot);
+			});
 		});
 	});
 
