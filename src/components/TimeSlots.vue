@@ -264,6 +264,10 @@
 	async function make_appointment() {
 		if (!selected_service.value || selected_slots.value.length < 1) return;
 
+		const unique_service_id = `${auth.currentUser.uid}_${
+			selected_service.value.name
+		}_${new Date().getTime()}`;
+
 		for (const slot of selected_slots.value) {
 			const current_timestamp = new Date().getTime() + slot;
 			const appointment_id = `${auth.currentUser.uid}_${current_timestamp}`;
@@ -274,6 +278,7 @@
 				date: props.selected_day,
 				service: selected_service.value.name,
 				taken_slot: slot,
+				unique_service_id: unique_service_id,
 			});
 		}
 		router.push('/thanks');

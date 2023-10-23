@@ -28,7 +28,10 @@
 							{{ slots.get(appointment.slot).finish }}
 						</span>
 					</ion-label>
-					<button class="delete" @click="delete_date(appointment.id)">
+					<button
+						class="delete"
+						@click="delete_dates(appointment.id)"
+					>
 						x
 					</button>
 				</ion-item>
@@ -60,6 +63,7 @@
 		orderBy,
 		deleteDoc,
 		doc,
+		getDocs,
 	} from 'firebase/firestore';
 	import { onAuthStateChanged } from 'firebase/auth';
 	import { reactive } from 'vue';
@@ -68,6 +72,7 @@
 	const router = useRouter();
 
 	const user_dates = reactive([]);
+	const dates_collection = collection(database, 'appointments');
 
 	onAuthStateChanged(auth, (user) => {
 		if (user) load_dates();
@@ -75,7 +80,6 @@
 	});
 
 	function load_dates() {
-		const dates_collection = collection(database, 'appointments');
 		const user_dates_query = query(
 			dates_collection,
 			where('client_id', '==', auth.currentUser.uid),
@@ -88,7 +92,7 @@
 				const date_data = doc.data();
 
 				const user_date = {
-					id: doc.id,
+					id: date_data.unique_service_id,
 					date: date_data.date.toDate(),
 					service: date_data.service,
 					slot: date_data.taken_slot,
@@ -99,8 +103,14 @@
 			user_dates.push(...updated_user_dates);
 		});
 	}
-	async function delete_date(id) {
-		await deleteDoc(doc(database, 'appointments', id));
+	async function delete_dates(id) {
+		const dates_to_delete = await getDocs(
+			query(dates_collection, where('unique_service_id', '==', id))
+		);
+
+		dates_to_delete.forEach((doc) => {
+			deleteDoc(doc.ref);
+		});
 	}
 
 	const slots = new Map([
