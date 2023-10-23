@@ -30,7 +30,7 @@
 					</ion-label>
 					<button
 						class="delete"
-						@click="delete_dates(appointment.id)"
+						@click="confirm_delete_dates(appointment.id)"
 					>
 						x
 					</button>
@@ -49,6 +49,7 @@
 		IonList,
 		IonItem,
 		IonLabel,
+		alertController,
 	} from '@ionic/vue';
 	import { format } from 'date-fns';
 	import { ptBR } from 'date-fns/locale';
@@ -62,7 +63,6 @@
 		collection,
 		orderBy,
 		deleteDoc,
-		doc,
 		getDocs,
 	} from 'firebase/firestore';
 	import { onAuthStateChanged } from 'firebase/auth';
@@ -102,6 +102,27 @@
 			user_dates.length = 0;
 			user_dates.push(...updated_user_dates);
 		});
+	}
+
+	async function confirm_delete_dates(id) {
+		const delete_alert = await alertController.create({
+			header: 'Deletar esse agendamento?',
+			subHeader: 'Você pode perder a data e horário!',
+			buttons: [
+				{
+					text: 'Sim',
+					role: 'submit',
+					handler: async () => {
+						delete_dates(id);
+					},
+				},
+				{
+					text: 'Não',
+					role: 'cancel',
+				},
+			],
+		});
+		await delete_alert.present();
 	}
 	async function delete_dates(id) {
 		const dates_to_delete = await getDocs(
