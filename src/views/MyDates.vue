@@ -12,6 +12,9 @@
 				</ion-toolbar>
 			</ion-header>
 			<ion-list>
+				<ion-item v-if="user_dates.length == 0">
+					Você ainda não possui nenhum agendamento.
+				</ion-item>
 				<ion-item v-for="appointment of user_dates">
 					<ion-label>
 						<span class="date">
