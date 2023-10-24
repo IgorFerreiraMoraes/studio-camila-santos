@@ -12,7 +12,11 @@
 					<ion-label>Minhas Datas</ion-label>
 				</ion-tab-button>
 
-				<ion-tab-button tab="AllDates" href="/all-dates">
+				<ion-tab-button
+					tab="AllDates"
+					href="/all-dates"
+					v-if="is_admin"
+				>
 					<ion-icon :icon="roseOutline" />
 					<ion-label>Todos os Agendamentos</ion-label>
 				</ion-tab-button>
@@ -37,9 +41,12 @@
 		roseOutline,
 	} from 'ionicons/icons';
 	import { ref } from 'vue';
+	import { useRouter } from 'vue-router';
 	import { database, auth } from '../firebase';
 	import { collection, getDoc, doc } from 'firebase/firestore';
 	import { onAuthStateChanged } from 'firebase/auth';
+
+	const router = useRouter();
 
 	const is_admin = ref(false);
 
