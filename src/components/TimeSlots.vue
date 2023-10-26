@@ -4,7 +4,7 @@
 		aria-label="Tipo de Serviço"
 		interface="popover"
 		placeholder="Qual Procedimento?"
-		@ionChange="select_service($event)"
+		@ionChange="handle_service_selection($event)"
 	>
 		<ion-select-option v-for="service in services" :value="service">
 			{{ service.name }}
@@ -15,7 +15,7 @@
 			v-for="[slot_id, slot] in available_slots"
 			:key="slot_id"
 			:class="{ selected: selected_slots.includes(slot_id) }"
-			@click="select_slots(slot_id)"
+			@click="handle_slot_selection(slot_id)"
 		>
 			<p>{{ slot.start }} - {{ slot.finish }}</p>
 		</li>
@@ -61,36 +61,41 @@
 	const selected_slots = ref([]);
 	const selected_service = ref();
 
-	function select_slots(slot_id) {
+	function handle_slot_selection(slot_id) {
 		if (
 			!selected_service.value ||
 			(selected_service.value.duration == 1 &&
 				!available_slots.value.get(slot_id + 1))
 		)
 			return;
+
 		selected_slots.value = [slot_id];
 		if (selected_service.value.duration > 0)
 			selected_slots.value.push(
 				slot_id + selected_service.value.duration
 			);
 	}
-	function select_service(event) {
+	function handle_service_selection(event) {
 		selected_service.value = event.detail.value;
 		selected_slots.value = [];
 	}
 
-	watch(props, async () => {
+	function render_slots() {
+		available_slots.value = new Map(slots_reference); //reset slots
+
 		const selected_day_query = query(
 			collection(database, 'appointments'),
 			where('date', '==', props.selected_day)
 		);
 		const selected_day_snap = onSnapshot(selected_day_query, (snap) => {
-			available_slots.value = new Map(slots_reference);
-
 			snap.forEach((doc) => {
-				available_slots.value.delete(doc.data().taken_slot);
+				available_slots.value.delete(doc.data().taken_slot); // Delete unavailable slots
 			});
 		});
+	}
+
+	watch(props, async () => {
+		await render_slots();
 	});
 
 	async function make_appointment() {
