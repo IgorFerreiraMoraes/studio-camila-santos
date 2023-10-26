@@ -15,7 +15,7 @@
 				<ion-tab-button
 					tab="AllDates"
 					href="/all-dates"
-					v-if="is_admin"
+					v-if="is_user_admin"
 				>
 					<ion-icon :icon="roseOutline" />
 					<ion-label>Todos os Agendamentos</ion-label>
@@ -40,25 +40,7 @@
 		calendarNumberOutline,
 		roseOutline,
 	} from 'ionicons/icons';
-	import { ref } from 'vue';
-	import { useRouter } from 'vue-router';
-	import { database, auth } from '../firebase';
-	import { collection, getDoc, doc } from 'firebase/firestore';
-	import { onAuthStateChanged } from 'firebase/auth';
-
-	const router = useRouter();
-
-	const is_admin = ref(false);
-
-	onAuthStateChanged(auth, async (user) => {
-		if (user) {
-			const user_document = await getDoc(
-				doc(collection(database, 'users'), user.uid)
-			);
-			if (user_document.exists() && user_document.data().is_admin)
-				is_admin.value = true;
-		} else router.push('/login');
-	});
+	import { is_user_admin } from '../modules/auth';
 </script>
 <style scoped>
 	ion-tab-button {
