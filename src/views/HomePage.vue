@@ -25,17 +25,9 @@
 		IonTitle,
 		IonToolbar,
 	} from '@ionic/vue';
-	import { useRouter } from 'vue-router';
 	import { ref } from 'vue';
-	import { auth } from '../firebase';
-	import { onAuthStateChanged } from 'firebase/auth';
 	import TimeSlots from '../components/TimeSlots.vue';
 	import DatePicker from '../components/DatePicker.vue';
-
-	const router = useRouter();
-	onAuthStateChanged(auth, (user) => {
-		if (!user) router.push('/login');
-	});
 
 	const selected_day = ref();
 </script>
