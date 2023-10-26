@@ -14,7 +14,7 @@
 			<ion-button
 				color="tertiary"
 				expand="block"
-				@click="sign_in(google)"
+				@click="sign_in_with_provider(google)"
 			>
 				<ion-icon slot="start" :icon="logoGoogle"></ion-icon>
 				Entrar com Google
@@ -22,7 +22,7 @@
 			<ion-button
 				color="tertiary"
 				expand="block"
-				@click="sign_in(facebook)"
+				@click="sign_in_with_provider(facebook)"
 			>
 				<ion-icon slot="start" :icon="logoFacebook"></ion-icon>
 				Entrar com Facebook
@@ -53,24 +53,44 @@
 	} from '@ionic/vue';
 	import { useRouter } from 'vue-router';
 	import { logoGoogle, logoFacebook, logoInstagram } from 'ionicons/icons';
-	import { auth, database } from '../firebase';
-
 	import { doc, setDoc, getDoc } from 'firebase/firestore';
 	import {
 		GoogleAuthProvider,
 		FacebookAuthProvider,
-		signInWithPopup,
-		setPersistence,
-		browserLocalPersistence,
 		onAuthStateChanged,
 	} from 'firebase/auth';
+	import { auth, database } from '../firebase';
+	import { sign_in_with_provider } from '../modules/auth';
+
+	const router = useRouter();
+
+	auth.languageCode = 'it';
+	const google = new GoogleAuthProvider();
+	const facebook = new FacebookAuthProvider();
+
+	onAuthStateChanged(auth, (user) => {
+		if (user) {
+			handle_user_login();
+		}
+	});
+
+	function handle_user_login() {
+		check_birthday();
+		router.push('/');
+	}
 
 	async function check_birthday() {
 		const doc_snap = await getDoc(
 			doc(database, 'users', auth.currentUser.uid)
 		);
-		let has_birthday = doc_snap.exists();
 
+		const has_birthday = doc_snap.exists();
+
+		if (!has_birthday) await show_birthday_alert();
+		return;
+	}
+
+	async function show_birthday_alert() {
 		const birthday_alert = await alertController.create({
 			header: 'Quando é Seu Aniversário?',
 			subHeader: 'Receba uma mensagem especial no dia!',
@@ -95,19 +115,7 @@
 					text: 'pronto',
 					role: 'submit',
 					handler: (data) => {
-						if (valid_date(data.month, data.day)) {
-							const user = auth.currentUser;
-
-							const user_doc = doc(database, 'users', user.uid);
-							setDoc(user_doc, {
-								birth_day: data.day,
-								birth_month: data.month,
-								id: user.uid,
-								name: user.displayName,
-							});
-
-							return true;
-						}
+						if (create_user_doc(data)) return true;
 						return false;
 					},
 				},
@@ -115,10 +123,24 @@
 			backdropDismiss: false,
 			translucent: true,
 		});
-		if (!has_birthday) await birthday_alert.present();
-		return;
+		birthday_alert.present();
 	}
-	function valid_date(month, day) {
+	function create_user_doc(data) {
+		if (is_valid_date(data.month, data.day)) {
+			const user = auth.currentUser;
+
+			const user_doc = doc(database, 'users', user.uid);
+			setDoc(user_doc, {
+				birth_day: data.day,
+				birth_month: data.month,
+				id: user.uid,
+				name: user.displayName,
+			});
+
+			return true;
+		}
+	}
+	function is_valid_date(month, day) {
 		month = Number(month);
 
 		if (
@@ -134,24 +156,6 @@
 			return false;
 
 		return true;
-	}
-
-	const router = useRouter();
-	onAuthStateChanged(auth, (user) => {
-		if (user) {
-			check_birthday();
-			router.push('/');
-		}
-	});
-
-	auth.languageCode = 'it';
-	const google = new GoogleAuthProvider();
-	const facebook = new FacebookAuthProvider();
-
-	function sign_in(provider) {
-		setPersistence(auth, browserLocalPersistence).then(() => {
-			return signInWithPopup(auth, provider);
-		});
 	}
 </script>
 <style scoped>

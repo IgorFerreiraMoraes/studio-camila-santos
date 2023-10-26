@@ -1,9 +1,20 @@
 import { ref } from 'vue';
-import { onAuthStateChanged } from 'firebase/auth';
+import {
+	onAuthStateChanged,
+	signInWithPopup,
+	setPersistence,
+	browserLocalPersistence,
+} from 'firebase/auth';
 import { getDoc, doc, collection } from 'firebase/firestore';
 import { auth, database } from '../firebase';
 
 const is_user_admin = ref(false);
+
+function sign_in_with_provider(provider) {
+	setPersistence(auth, browserLocalPersistence).then(() => {
+		return signInWithPopup(auth, provider);
+	});
+}
 
 const check_user_role = async (user) => {
 	const user_document = await getDoc(
@@ -17,4 +28,4 @@ onAuthStateChanged(auth, (user) => {
 	check_user_role(user);
 });
 
-export { is_user_admin };
+export { is_user_admin, sign_in_with_provider };
