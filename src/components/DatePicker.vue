@@ -3,15 +3,15 @@
 		class="ion-justify-content-center ion-margin-vertical"
 		id="select-month"
 	>
-		<button @click="change_month(-1)">
-			<ion-icon v-if="month_index != 0" :icon="chevronBack"></ion-icon>
+		<button @click="change_month(-1)" v-if="month_index != 0">
+			<ion-icon :icon="chevronBack"></ion-icon>
 		</button>
 		{{ selected_month }}
-		<button @click="change_month(1)">
-			<ion-icon
-				v-if="month_index != months.length - 1"
-				:icon="chevronForward"
-			></ion-icon>
+		<button
+			@click="change_month(1)"
+			v-if="month_index != months.length - 1"
+		>
+			<ion-icon :icon="chevronForward"></ion-icon>
 		</button>
 	</div>
 	<div class="ion-margin-horizontal scroll-horizontal">
@@ -38,10 +38,12 @@
 	import { ref, watch } from 'vue';
 	import Day from './Day.vue';
 
+	const MONTHS_IN_ADVANCE = 4;
+
 	const emit = defineEmits(['select_day']);
 
 	const today = new Date();
-	const schedule_limit = addMonths(today, 4);
+	const schedule_limit = addMonths(today, MONTHS_IN_ADVANCE);
 	const months = ref([]);
 	const days_in_month = ref([]);
 
@@ -70,14 +72,7 @@
 	});
 
 	function change_month(months_to_change) {
-		if (months_to_change < 0 && month_index.value > 0) {
-			month_index.value--;
-		} else if (
-			months_to_change > 0 &&
-			month_index.value < months.value.length - 1
-		) {
-			month_index.value++;
-		}
+		month_index.value += months_to_change;
 	}
 
 	function same_day(day1, day2) {
