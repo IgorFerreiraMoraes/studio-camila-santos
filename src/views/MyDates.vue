@@ -12,7 +12,7 @@
 				</ion-toolbar>
 			</ion-header>
 			<ion-list>
-				<ion-item v-if="user_dates.length == 0">
+				<ion-item v-if="!has_appointments">
 					Você ainda não possui nenhum agendamento.
 				</ion-item>
 				<ion-item v-for="appointment of user_dates">
@@ -67,19 +67,14 @@
 		deleteDoc,
 		getDocs,
 	} from 'firebase/firestore';
-	import { onAuthStateChanged } from 'firebase/auth';
-	import { reactive } from 'vue';
-	import { useRouter } from 'vue-router';
-
-	const router = useRouter();
+	import { computed, reactive } from 'vue';
 
 	const user_dates = reactive([]);
 	const dates_collection = collection(database, 'appointments');
 
-	onAuthStateChanged(auth, (user) => {
-		if (user) load_dates();
-		else router.push('/login');
-	});
+	const has_appointments = computed(() => user_dates.length > 0);
+
+	load_dates();
 
 	function load_dates() {
 		const user_dates_query = query(
