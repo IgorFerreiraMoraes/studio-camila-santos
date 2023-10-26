@@ -1,30 +1,35 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
-import Tabs from '../views/Tabs.vue';
-import Login from '../views/Login.vue';
-import HomePage from '../views/HomePage.vue';
-import Thanks from '../views/Thanks.vue';
-import MyDates from '../views/MyDates.vue';
-import AllDates from '../views/AllDates.vue';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../firebase.js';
 
 const routes = [
 	{
 		path: '/',
-		component: Tabs,
+		component: () => import('../views/Tabs.vue'),
 		children: [
 			{
 				path: 'home',
 				name: 'Home',
-				component: HomePage,
+				component: () => import('../views/HomePage.vue'),
+				meta: {
+					requiresAuth: true,
+				},
 			},
 			{
 				path: 'my-dates',
 				name: 'MyDates',
-				component: MyDates,
+				component: () => import('../views/MyDates.vue'),
+				meta: {
+					requiresAuth: true,
+				},
 			},
 			{
 				path: 'all-dates',
 				name: 'AllDates',
-				component: AllDates,
+				component: () => import('../views/AllDates.vue'),
+				meta: {
+					requiresAuth: true,
+				},
 			},
 		],
 		redirect: '/home',
@@ -32,18 +37,33 @@ const routes = [
 	{
 		path: '/login',
 		name: 'Login',
-		component: Login,
+		component: () => import('../views/Login.vue'),
 	},
 	{
 		path: '/thanks',
 		name: 'Thanks',
-		component: Thanks,
+		component: () => import('../views/Thanks.vue'),
+		meta: {
+			requiresAuth: true,
+		},
 	},
 ];
 
 const router = createRouter({
 	history: createWebHistory(import.meta.env.BASE_URL),
 	routes,
+});
+
+router.beforeEach((to, from, next) => {
+	const requiresAuth = to.matched.some((record) => record.meta.requiresAuth);
+
+	onAuthStateChanged(auth, (user) => {
+		if (requiresAuth && !user) {
+			next('/login');
+		} else {
+			next();
+		}
+	});
 });
 
 export default router;
