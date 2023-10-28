@@ -37,3 +37,6 @@ Gerenciar um cronograma pode ser desafiador, especialmente quando há detalhes q
 -   [Vite](https://vitejs.dev/): Um construtor de projetos frontend rápido e flexível.
     -   [Vite PWA](https://vite-pwa-org.netlify.app/): Para transformar o aplicativo em uma Progressive Web App.
 -   [date-fns](https://date-fns.org/): Uma biblioteca para formatação de datas em JavaScript.
+
+
+Licença do MIT
