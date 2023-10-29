@@ -2,14 +2,19 @@
 	<ion-toolbar>
 		<ion-title>Horários</ion-title>
 	</ion-toolbar>
-	<ion-select placeholder="Com quem marcar?" interface="popover">
+	<ion-select
+		aria-label="Escolher Profissional"
+		interface="popover"
+		placeholder="Com quem marcar?"
+		@ion-change="handle_staff_selection($event)"
+	>
 		<ion-select-option> Igor </ion-select-option>
 	</ion-select>
 	<ion-select
 		aria-label="Tipo de Serviço"
 		interface="popover"
 		placeholder="Qual Procedimento?"
-		@ionChange="handle_service_selection($event)"
+		@ion-change="handle_service_selection($event)"
 	>
 		<ion-select-option
 			v-for="service in services"
@@ -19,7 +24,7 @@
 			{{ service.name }}
 		</ion-select-option>
 	</ion-select>
-	<ul>
+	<ul v-if="selected_staff && selected_service">
 		<li
 			v-for="[slot_id, slot] in available_slots"
 			:key="slot_id"
@@ -29,6 +34,11 @@
 			<p>{{ slot.start }} - {{ slot.finish }}</p>
 		</li>
 	</ul>
+	<p class="cta" v-else>
+		Pronta para brilhar? <br />
+		Escolha uma profissional e um procedimento para ver os horários
+		disponíveis.
+	</p>
 	<ion-fab slot="fixed" vertical="bottom" horizontal="center">
 		<ion-fab-button color="tertiary" @click="make_appointment()">
 			<ion-icon :icon="addOutline"></ion-icon>
@@ -69,7 +79,11 @@
 
 	const selected_slots = ref([]);
 	const selected_service = ref();
+	const selected_staff = ref();
 
+	function handle_staff_selection(event) {
+		selected_staff.value = event.detail.value;
+	}
 	function handle_slot_selection(slot_id) {
 		if (
 			!selected_service.value ||
@@ -108,7 +122,12 @@
 	});
 
 	async function make_appointment() {
-		if (!selected_service.value || selected_slots.value.length < 1) return;
+		if (
+			!selected_service.value ||
+			selected_slots.value.length < 1 ||
+			!selected_staff
+		)
+			return;
 
 		const unique_service_id = `${auth.currentUser.uid}_${
 			selected_service.value.name
@@ -131,6 +150,10 @@
 	}
 </script>
 <style scoped>
+	p.cta {
+		max-width: min(400px, 90%);
+		margin: 1.55rem auto;
+	}
 	ion-title {
 		font-weight: 400;
 		background-color: white;
