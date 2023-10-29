@@ -8,19 +8,22 @@
 		placeholder="Com quem marcar?"
 		@ion-change="handle_staff_selection($event)"
 	>
-		<ion-select-option> Igor </ion-select-option>
+		<ion-select-option
+			v-for="staff of staff_reference"
+			:value="staff"
+			:key="staff"
+		>
+			{{ staff.name }}
+		</ion-select-option>
 	</ion-select>
 	<ion-select
+		v-if="selected_staff"
 		aria-label="Tipo de Serviço"
 		interface="popover"
 		placeholder="Qual Procedimento?"
-		@ion-change="handle_service_selection($event)"
+		v-model="selected_service"
 	>
-		<ion-select-option
-			v-for="service in services"
-			:key="service"
-			:value="service"
-		>
+		<ion-select-option v-for="service of selected_staff.services">
 			{{ service.name }}
 		</ion-select-option>
 	</ion-select>
@@ -53,9 +56,14 @@
 		IonFab,
 		IonFabButton,
 		IonIcon,
+		IonTitle,
+		IonToolbar,
 	} from '@ionic/vue';
 	import { addOutline } from 'ionicons/icons';
-	import { slots_reference } from '../modules/bussiness_reference';
+	import {
+		slots_reference,
+		staff_reference,
+	} from '../modules/bussiness_reference';
 	import { database, auth } from '../firebase';
 	import {
 		collection,
@@ -68,21 +76,16 @@
 	import { useRouter } from 'vue-router';
 
 	const router = useRouter();
-
 	const props = defineProps(['selected_day']);
 
 	const available_slots = ref(new Map());
-	const services = [
-		{ name: 'Manicure', duration: 0 },
-		{ name: 'Depilação Completa', duration: 1 },
-	];
-
 	const selected_slots = ref([]);
 	const selected_service = ref();
 	const selected_staff = ref();
 
-	function handle_staff_selection(event) {
-		selected_staff.value = event.detail.value;
+	function handle_staff_selection($event) {
+		selected_staff.value = $event.detail.value;
+		selected_service.value = null;
 	}
 	function handle_slot_selection(slot_id) {
 		if (
@@ -97,10 +100,6 @@
 			selected_slots.value.push(
 				slot_id + selected_service.value.duration
 			);
-	}
-	function handle_service_selection(event) {
-		selected_service.value = event.detail.value;
-		selected_slots.value = [];
 	}
 
 	function render_slots() {

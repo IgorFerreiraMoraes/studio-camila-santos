@@ -170,3 +170,19 @@ export const slots_reference = new Map([
 ]);
 
 export const services_reference = 2;
+export const staff_reference = {
+	Igor: {
+		name: 'Igor',
+		services: [
+			{ name: 'Manicure', duration: 30 },
+			{ name: 'Depilação Completa', duration: 60 },
+		],
+	},
+	Camila: {
+		name: 'Camila',
+		services: [
+			{ name: 'Manicure', duration: 30 },
+			{ name: 'Depilação Completa', duration: 60 },
+		],
+	},
+};
