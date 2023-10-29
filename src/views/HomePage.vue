@@ -31,18 +31,3 @@
 
 	const selected_day = ref();
 </script>
-
-<style scoped>
-	ion-title {
-		font-family: 'Playfair Display', serif;
-		font-size: 1.3rem;
-		letter-spacing: -0.5px;
-		color: #302571;
-		padding: 0;
-	}
-</style>
-<style>
-	* {
-		font-family: 'Montserrat', sans-serif;
-	}
-</style>

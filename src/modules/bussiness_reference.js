@@ -168,3 +168,5 @@ export const slots_reference = new Map([
 		},
 	],
 ]);
+
+export const services_reference = 2;

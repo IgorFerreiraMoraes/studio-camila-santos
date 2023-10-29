@@ -134,16 +134,6 @@
 	const slots = new Map(slots_reference);
 </script>
 <style scoped>
-	ion-title {
-		font-family: 'Playfair Display', serif;
-		font-size: 1.3rem;
-		letter-spacing: -0.5px;
-		color: #302571;
-		padding: 0;
-	}
-	ion-label span {
-		display: block;
-	}
 	.delete {
 		background-color: var(--ion-color-danger-tint);
 		padding: 4px 8px;

@@ -53,8 +53,3 @@
 		});
 	});
 </script>
-<style scoped>
-	ion-label span {
-		display: block;
-	}
-</style>

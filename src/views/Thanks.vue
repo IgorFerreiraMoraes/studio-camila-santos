@@ -36,15 +36,7 @@
 	}
 </script>
 <style scoped>
-	ion-title {
-		padding: 0;
-		font-family: 'Playfair Display', serif;
-		letter-spacing: -0.5px;
-		color: #302571;
-	}
-	ion-button,
 	p {
 		max-width: 560px;
-		margin: 2rem auto;
 	}
 </style>

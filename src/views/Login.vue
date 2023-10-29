@@ -161,19 +161,9 @@
 <style scoped>
 	h1,
 	p {
-		font-family: 'Montserrat', sans-serif;
 		margin: 0;
 	}
 	.welcome {
 		margin: 16px 0;
-	}
-	ion-button {
-		max-width: 560px;
-		margin: 8px auto;
-		transition: 0.15s;
-	}
-	ion-title {
-		font-family: 'Playfair Display', serif;
-		color: #302571;
 	}
 </style>

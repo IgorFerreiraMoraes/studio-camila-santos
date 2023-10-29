@@ -42,8 +42,3 @@
 	} from 'ionicons/icons';
 	import { is_user_admin } from '../modules/auth';
 </script>
-<style scoped>
-	ion-tab-button {
-		--color-selected: var(--ion-color-tertiary);
-	}
-</style>

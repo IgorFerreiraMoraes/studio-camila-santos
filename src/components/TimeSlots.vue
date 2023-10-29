@@ -1,12 +1,21 @@
 <template>
-	<h2>Horários</h2>
+	<ion-toolbar>
+		<ion-title>Horários</ion-title>
+	</ion-toolbar>
+	<ion-select placeholder="Com quem marcar?" interface="popover">
+		<ion-select-option> Igor </ion-select-option>
+	</ion-select>
 	<ion-select
 		aria-label="Tipo de Serviço"
 		interface="popover"
 		placeholder="Qual Procedimento?"
 		@ionChange="handle_service_selection($event)"
 	>
-		<ion-select-option v-for="service in services" :value="service">
+		<ion-select-option
+			v-for="service in services"
+			:key="service"
+			:value="service"
+		>
 			{{ service.name }}
 		</ion-select-option>
 	</ion-select>
@@ -36,7 +45,7 @@
 		IonIcon,
 	} from '@ionic/vue';
 	import { addOutline } from 'ionicons/icons';
-	import { slots_reference } from '../SlotsReference';
+	import { slots_reference } from '../modules/bussiness_reference';
 	import { database, auth } from '../firebase';
 	import {
 		collection,
@@ -122,19 +131,15 @@
 	}
 </script>
 <style scoped>
-	h2 {
-		text-align: center;
-		font-family: 'Playfair Display', serif;
-		font-size: 1.2rem;
-		letter-spacing: -0.5px;
-		color: #302571;
-		padding: 0;
+	ion-title {
+		font-weight: 400;
+		background-color: white;
 	}
 	ul {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
-		height: 35%;
 		overflow-y: scroll;
+		height: calc(100vh - 465px);
 		padding: 0 24px 8px 24px;
 		gap: 8px;
 	}

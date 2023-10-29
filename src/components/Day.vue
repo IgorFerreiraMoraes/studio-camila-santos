@@ -25,7 +25,6 @@
 		place-items: center;
 		padding: 12px 0;
 		border-radius: 8px;
-		font-family: 'Montserrat', sans-serif;
 		transition: 0.15s;
 	}
 	.day .day-number {
