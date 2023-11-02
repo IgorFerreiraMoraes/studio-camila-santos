@@ -177,6 +177,7 @@ export const staff_reference = {
 			{ name: 'Manicure', duration: 30 },
 			{ name: 'Depilação Completa', duration: 60 },
 		],
+		id: 1,
 	},
 	Camila: {
 		name: 'Camila',
@@ -184,5 +185,6 @@ export const staff_reference = {
 			{ name: 'Manicure', duration: 30 },
 			{ name: 'Depilação Completa', duration: 60 },
 		],
+		id: 2,
 	},
 };
