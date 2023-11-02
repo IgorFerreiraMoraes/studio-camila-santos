@@ -103,7 +103,7 @@
 	}
 
 	function render_slots() {
-		available_slots.value = new Map(slots_reference); //reset slots
+		available_slots.value = generate_slots(1, 1, 1);
 
 		const selected_day_query = query(
 			collection(database, 'appointments'),
@@ -115,6 +115,7 @@
 			});
 		});
 	}
+	function generate_slots(start_hour, ending_hour, slot_duration_minutes) {}
 
 	watch(props, async () => {
 		await render_slots();
