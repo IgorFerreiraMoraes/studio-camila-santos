@@ -3,7 +3,7 @@
 		<ion-title>Horários</ion-title>
 	</ion-toolbar>
 	<ion-select
-		aria-label="Escolher Profissional"
+		aria-label="Escolha uma Profissional"
 		interface="popover"
 		placeholder="Com quem marcar?"
 		@ion-change="handle_staff_selection($event)"
@@ -18,23 +18,32 @@
 	</ion-select>
 	<ion-select
 		v-if="selected_staff"
-		aria-label="Tipo de Serviço"
+		aria-label="Escolha o Procedimento Estético"
 		interface="popover"
 		placeholder="Qual Procedimento?"
 		v-model="selected_service"
 	>
-		<ion-select-option v-for="service of selected_staff.services">
+		<ion-select-option
+			v-for="service of selected_staff.services"
+			:value="service"
+			:key="service.name"
+		>
 			{{ service.name }}
 		</ion-select-option>
 	</ion-select>
 	<ul v-if="selected_staff && selected_service">
 		<li
-			v-for="[slot_id, slot] in available_slots"
-			:key="slot_id"
-			:class="{ selected: selected_slots.includes(slot_id) }"
-			@click="handle_slot_selection(slot_id)"
+			v-for="slot in available_slots"
+			:key="slot"
+			:class="{ selected: selected_slot == slot }"
+			@click="handle_slot_selection(slot)"
 		>
-			<p>{{ slot.start }} - {{ slot.finish }}</p>
+			<p>
+				{{ format(slot, 'kk:mm') }} -
+				{{
+					format(addMinutes(slot, selected_service.duration), 'kk:mm')
+				}}
+			</p>
 		</li>
 	</ul>
 	<p class="cta" v-else>
@@ -49,7 +58,6 @@
 	</ion-fab>
 </template>
 <script setup>
-	import { ref, watch } from 'vue';
 	import {
 		IonSelect,
 		IonSelectOption,
@@ -60,10 +68,9 @@
 		IonToolbar,
 	} from '@ionic/vue';
 	import { addOutline } from 'ionicons/icons';
-	import {
-		slots_reference,
-		staff_reference,
-	} from '../modules/bussiness_reference';
+	import { ref, watch } from 'vue';
+	import { useRouter } from 'vue-router';
+	import { staff_reference } from '../modules/bussiness_reference';
 	import { database, auth } from '../firebase';
 	import {
 		collection,
@@ -72,14 +79,15 @@
 		query,
 		where,
 		onSnapshot,
+		Timestamp,
 	} from 'firebase/firestore';
-	import { useRouter } from 'vue-router';
+	import { addMinutes, eachMinuteOfInterval, format } from 'date-fns';
 
 	const router = useRouter();
 	const props = defineProps(['selected_day']);
 
-	const available_slots = ref(new Map());
-	const selected_slots = ref([]);
+	const available_slots = ref();
+	const selected_slot = ref();
 	const selected_service = ref();
 	const selected_staff = ref();
 
@@ -87,65 +95,137 @@
 		selected_staff.value = $event.detail.value;
 		selected_service.value = null;
 	}
-	function handle_slot_selection(slot_id) {
-		if (
-			!selected_service.value ||
-			(selected_service.value.duration == 1 &&
-				!available_slots.value.get(slot_id + 1))
-		)
-			return;
+	function handle_slot_selection(slot) {
+		if (!selected_service.value) return;
 
-		selected_slots.value = [slot_id];
-		if (selected_service.value.duration > 0)
-			selected_slots.value.push(
-				slot_id + selected_service.value.duration
-			);
+		selected_slot.value = slot;
 	}
 
-	function render_slots() {
-		available_slots.value = generate_slots(1, 1, 1);
-
-		const selected_day_query = query(
-			collection(database, 'appointments'),
-			where('date', '==', props.selected_day)
+	async function render_slots() {
+		available_slots.value = await generate_slots(
+			7,
+			19,
+			selected_service.value.duration
 		);
-		const selected_day_snap = onSnapshot(selected_day_query, (snap) => {
-			snap.forEach((doc) => {
-				available_slots.value.delete(doc.data().taken_slot); // Delete unavailable slots
+	}
+	async function generate_slots(
+		start_hour,
+		ending_hour,
+		slot_duration_minutes
+	) {
+		const selected_day_start = new Date(props.selected_day);
+		const selected_day_end = new Date(props.selected_day);
+
+		selected_day_start.setHours(start_hour);
+		selected_day_end.setHours(ending_hour);
+
+		const interval = { start: selected_day_start, end: selected_day_end };
+
+		const all_slots_in_interval = eachMinuteOfInterval(interval, {
+			step: slot_duration_minutes,
+		});
+		all_slots_in_interval.pop();
+
+		const existing_appointments = await fetch_existing_appointments(
+			props.selected_day
+		);
+		const available_slots_in_interval = all_slots_in_interval.filter(
+			(slot) => {
+				return !is_slot_overlapping_with_appointments(
+					slot,
+					slot_duration_minutes,
+					existing_appointments
+				);
+			}
+		);
+
+		return available_slots_in_interval;
+	}
+	function fetch_existing_appointments(day) {
+		const day_query = query(
+			collection(database, 'appointments'),
+			where('date', '==', day),
+			where('staff_id', '==', selected_staff.value.id)
+		);
+
+		return new Promise((resolve) => {
+			const existing_appointments = [];
+
+			const appointments_listener = onSnapshot(day_query, (snap) => {
+				snap.forEach((appointment) => {
+					existing_appointments.push(appointment.data());
+				});
+				resolve(existing_appointments);
 			});
 		});
 	}
-	function generate_slots(start_hour, ending_hour, slot_duration_minutes) {}
+	function is_slot_overlapping_with_appointments(
+		slot,
+		slot_duration_minutes,
+		existing_appointments
+	) {
+		const slot_start = Timestamp.fromDate(slot).seconds;
+		const slot_end = Timestamp.fromDate(
+			addMinutes(slot, slot_duration_minutes)
+		).seconds;
 
-	watch(props, async () => {
-		await render_slots();
+		if (
+			!existing_appointments ||
+			slot_start < Timestamp.fromDate(new Date()).seconds
+		) {
+			selected_service.value = null;
+			return true;
+		}
+
+		return existing_appointments.some((appointment) => {
+			const appointment_start = appointment.start_time.seconds;
+			const appointment_end = appointment.end_time.seconds;
+
+			return (
+				(slot_start <= appointment_start &&
+					slot_end >= appointment_end) ||
+				(slot_start > appointment_start &&
+					slot_end < appointment_end) ||
+				(slot_start <= appointment_start &&
+					slot_end > appointment_start) ||
+				(slot_start < appointment_end && slot_end >= appointment_end)
+			);
+		});
+	}
+
+	watch(selected_service, async () => {
+		if (selected_service.value) render_slots();
+	});
+	watch(props, () => {
+		selected_service.value = null;
 	});
 
 	async function make_appointment() {
 		if (
 			!selected_service.value ||
-			selected_slots.value.length < 1 ||
-			!selected_staff
+			!selected_slot.value ||
+			!selected_staff.value
 		)
 			return;
 
-		const unique_service_id = `${auth.currentUser.uid}_${
+		const appointment_id = `${auth.currentUser.uid}_${
 			selected_service.value.name
 		}_${new Date().getTime()}`;
 
-		for (const slot of selected_slots.value) {
-			const current_timestamp = new Date().getTime() + slot;
-			const appointment_id = `${auth.currentUser.uid}_${current_timestamp}`;
-
-			await setDoc(doc(database, 'appointments', appointment_id), {
-				client_id: auth.currentUser.uid,
-				client_name: auth.currentUser.displayName,
-				date: props.selected_day,
-				service: selected_service.value.name,
-				taken_slot: slot,
-				unique_service_id: unique_service_id,
-			});
-		}
+		await setDoc(doc(database, 'appointments', appointment_id), {
+			client_id: auth.currentUser.uid,
+			client_name: auth.currentUser.displayName,
+			staff_id: selected_staff.value.id,
+			staff_name: selected_staff.value.name,
+			date: props.selected_day,
+			service: selected_service.value.name,
+			start_time: selected_slot.value,
+			end_time: addMinutes(
+				selected_slot.value,
+				selected_service.value.duration
+			),
+		});
+		render_slots();
 		router.push('/thanks');
 	}
 </script>
