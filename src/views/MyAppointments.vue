@@ -17,7 +17,7 @@
 				</ion-item>
 				<ion-item v-else v-for="appointment of user_appointments">
 					<ion-label>
-						<span class="appointment">
+						<span class="date">
 							{{
 								format(appointment.date, `d 'de' MMMM`, {
 									locale: ptBR,
@@ -141,19 +141,5 @@
 	}
 	.delete:hover {
 		background-color: var(--ion-color-danger-shade);
-	}
-	.appointment {
-		text-indent: 0px;
-		font-weight: 300;
-		letter-spacing: 1px;
-		font-size: 0.9rem;
-	}
-	.service {
-		font-weight: 600;
-		font-size: 1.25rem;
-		letter-spacing: -0.5px;
-	}
-	.time {
-		text-indent: 16px;
 	}
 </style>
