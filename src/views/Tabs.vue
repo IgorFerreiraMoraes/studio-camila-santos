@@ -7,7 +7,7 @@
 					<ion-icon :icon="calendarNumberOutline" />
 					<ion-label>Agendar</ion-label>
 				</ion-tab-button>
-				<ion-tab-button tab="MyDates" href="/my-dates">
+				<ion-tab-button tab="MyAppointments" href="/my-appointments">
 					<ion-icon :icon="bookmarkOutline" />
 					<ion-label>Minhas Datas</ion-label>
 				</ion-tab-button>

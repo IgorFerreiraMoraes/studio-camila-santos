@@ -15,11 +15,11 @@
 				<ion-item v-if="!has_appointments">
 					Você ainda não possui nenhum agendamento.
 				</ion-item>
-				<ion-item v-for="appointment of user_dates">
+				<ion-item v-for="appointment of user_appointments">
 					<ion-label>
-						<span class="date">
+						<span class="appointment">
 							{{
-								format(appointment.date, `d 'de' MMMM`, {
+								format(appointment.appointment, `d 'de' MMMM`, {
 									locale: ptBR,
 									addSuffix: true,
 								})
@@ -33,7 +33,7 @@
 					</ion-label>
 					<button
 						class="delete"
-						@click="confirm_delete_dates(appointment.id)"
+						@click="confirm_delete_appointment(appointment.id)"
 					>
 						x
 					</button>
@@ -56,7 +56,6 @@
 	} from '@ionic/vue';
 	import { format } from 'date-fns';
 	import { ptBR } from 'date-fns/locale';
-	import { slots_reference } from '../SlotsReference';
 	import { auth, database } from '../firebase';
 	import {
 		onSnapshot,
@@ -66,42 +65,47 @@
 		orderBy,
 		deleteDoc,
 		getDocs,
+		doc,
 	} from 'firebase/firestore';
 	import { computed, reactive } from 'vue';
 
-	const user_dates = reactive([]);
-	const dates_collection = collection(database, 'appointments');
+	const user_appointments = reactive([]);
+	const appointments_collection = collection(database, 'appointments');
 
-	const has_appointments = computed(() => user_dates.length > 0);
+	const has_appointments = computed(() => user_appointments.length > 0);
 
-	load_dates();
+	load_appointments();
 
-	function load_dates() {
-		const user_dates_query = query(
-			dates_collection,
+	function load_appointments() {
+		const user_appointments_query = query(
+			appointments_collection,
 			where('client_id', '==', auth.currentUser.uid),
 			orderBy('date'),
-			orderBy('taken_slot')
+			orderBy('start_time')
 		);
-		const user_dates_snap = onSnapshot(user_dates_query, (snap) => {
-			const updated_user_dates = [];
-			snap.forEach((doc) => {
-				const date_data = doc.data();
+		const user_appointments_snap = onSnapshot(
+			user_appointments_query,
+			(snap) => {
+				const updated_user_appointments = [];
+				snap.forEach((doc) => {
+					const appointment_data = doc.data();
 
-				const user_date = {
-					id: date_data.unique_service_id,
-					date: date_data.date.toDate(),
-					service: date_data.service,
-					slot: date_data.taken_slot,
-				};
-				updated_user_dates.push(user_date);
-			});
-			user_dates.length = 0;
-			user_dates.push(...updated_user_dates);
-		});
+					const user_appointment = {
+						id: doc.id,
+						date: appointment_data.date.toDate(),
+						service: appointment_data.service,
+						start: appointment_data.start_time,
+						end: appointment_data.end_time,
+					};
+					updated_user_appointments.push(user_appointment);
+				});
+				user_appointments.length = 0;
+				user_appointments.push(...updated_user_appointments);
+			}
+		);
 	}
 
-	async function confirm_delete_dates(id) {
+	async function confirm_delete_appointment(id) {
 		const delete_alert = await alertController.create({
 			header: 'Deletar esse agendamento?',
 			subHeader: 'Você pode perder a data e horário!',
@@ -110,7 +114,7 @@
 					text: 'Sim',
 					role: 'submit',
 					handler: async () => {
-						delete_dates(id);
+						delete_appointment(id);
 					},
 				},
 				{
@@ -121,17 +125,9 @@
 		});
 		await delete_alert.present();
 	}
-	async function delete_dates(id) {
-		const dates_to_delete = await getDocs(
-			query(dates_collection, where('unique_service_id', '==', id))
-		);
-
-		dates_to_delete.forEach((doc) => {
-			deleteDoc(doc.ref);
-		});
+	async function delete_appointment(id) {
+		await deleteDoc(doc(appointments_collection, id));
 	}
-
-	const slots = new Map(slots_reference);
 </script>
 <style scoped>
 	.delete {
@@ -144,7 +140,7 @@
 	.delete:hover {
 		background-color: var(--ion-color-danger-shade);
 	}
-	.date {
+	.appointment {
 		text-indent: 0px;
 		font-weight: 300;
 		letter-spacing: 1px;
