@@ -15,11 +15,11 @@
 				<ion-item v-if="!has_appointments">
 					Você ainda não possui nenhum agendamento.
 				</ion-item>
-				<ion-item v-for="appointment of user_appointments">
+				<ion-item v-else v-for="appointment of user_appointments">
 					<ion-label>
 						<span class="appointment">
 							{{
-								format(appointment.appointment, `d 'de' MMMM`, {
+								format(appointment.date, `d 'de' MMMM`, {
 									locale: ptBR,
 									addSuffix: true,
 								})
@@ -27,8 +27,11 @@
 						</span>
 						<span class="service">{{ appointment.service }}</span>
 						<span class="time">
-							{{ slots.get(appointment.slot).start }} -
-							{{ slots.get(appointment.slot).finish }}
+							{{
+								format(appointment.start, `p`, { locale: ptBR })
+							}}
+							-
+							{{ format(appointment.end, `p`, { locale: ptBR }) }}
 						</span>
 					</ion-label>
 					<button
@@ -64,7 +67,6 @@
 		collection,
 		orderBy,
 		deleteDoc,
-		getDocs,
 		doc,
 	} from 'firebase/firestore';
 	import { computed, reactive } from 'vue';
@@ -94,8 +96,8 @@
 						id: doc.id,
 						date: appointment_data.date.toDate(),
 						service: appointment_data.service,
-						start: appointment_data.start_time,
-						end: appointment_data.end_time,
+						start: appointment_data.start_time.toDate(),
+						end: appointment_data.end_time.toDate(),
 					};
 					updated_user_appointments.push(user_appointment);
 				});
