@@ -1,6 +1,18 @@
 <template>
 	<ion-page>
-		<ion-content>
+		<ion-header :translucent="true">
+			<ion-toolbar>
+				<ion-title class="ion-margin-bottom"
+					>Agendados com Você</ion-title
+				>
+			</ion-toolbar>
+		</ion-header>
+		<ion-content :fullscreen="true">
+			<ion-header collapse="condense">
+				<ion-toolbar>
+					<ion-title size="medium">Agendados com Você</ion-title>
+				</ion-toolbar>
+			</ion-header>
 			<ion-list>
 				<ion-item v-for="appointment in appointments">
 					<ion-label>
@@ -50,6 +62,9 @@
 		IonList,
 		IonItem,
 		IonLabel,
+		IonTitle,
+		IonToolbar,
+		IonHeader,
 	} from '@ionic/vue';
 	import { reactive } from 'vue';
 	import { collection, onSnapshot, orderBy, query } from 'firebase/firestore';
