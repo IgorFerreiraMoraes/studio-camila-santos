@@ -24,9 +24,9 @@ const routes = [
 				},
 			},
 			{
-				path: 'all-dates',
-				name: 'AllDates',
-				component: () => import('../views/AllDates.vue'),
+				path: 'appointments-with-me',
+				name: 'AppointmentsWithMe',
+				component: () => import('../views/AppointmentsWithMe.vue'),
 				meta: {
 					requiresAuth: true,
 				},

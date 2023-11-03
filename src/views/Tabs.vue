@@ -13,12 +13,12 @@
 				</ion-tab-button>
 
 				<ion-tab-button
-					tab="AllDates"
-					href="/all-dates"
+					tab="AppointmentsWithMe"
+					href="/appointments-with-me"
 					v-if="is_user_admin"
 				>
 					<ion-icon :icon="roseOutline" />
-					<ion-label>Todos os Agendamentos</ion-label>
+					<ion-label>Com Você</ion-label>
 				</ion-tab-button>
 			</ion-tab-bar>
 		</ion-tabs>
