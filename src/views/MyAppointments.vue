@@ -13,7 +13,8 @@
 			</ion-header>
 			<ion-list>
 				<ion-item v-if="!has_appointments">
-					Você ainda não possui nenhum agendamento.
+					Você ainda não possui nenhum agendamento. <br />
+					Vá na aba "Agendar" para marcar um horário
 				</ion-item>
 				<ion-item v-else v-for="appointment of user_appointments">
 					<ion-label>

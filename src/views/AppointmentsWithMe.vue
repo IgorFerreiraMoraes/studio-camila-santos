@@ -13,7 +13,10 @@
 					<ion-title size="medium">Agendados com Você</ion-title>
 				</ion-toolbar>
 			</ion-header>
-			<ion-list>
+			<p v-if="appointments <= 0">
+				Quando alguém marcar um agendamento com você, vai aparecer aqui!
+			</p>
+			<ion-list v-else>
 				<ion-item v-for="appointment in appointments">
 					<ion-label>
 						<span class="date">

@@ -31,7 +31,7 @@
 			{{ service.name }}
 		</ion-select-option>
 	</ion-select>
-	<ul v-if="selected_staff && selected_service">
+	<ul v-if="available_slots.length > 0 && selected_staff && selected_service">
 		<li
 			v-for="slot in available_slots"
 			:key="slot"
@@ -39,6 +39,7 @@
 			@click="handle_slot_selection(slot)"
 		>
 			<p>
+				{{ available_slots.length }}
 				{{ format(slot, 'kk:mm') }} -
 				{{
 					format(addMinutes(slot, selected_service.duration), 'kk:mm')
@@ -48,8 +49,8 @@
 	</ul>
 	<p class="cta" v-else>
 		Pronta para brilhar? <br />
-		Escolha uma profissional e um procedimento para ver os horários
-		disponíveis.
+		Escolha uma profissional e um procedimento que veremos se há horários
+		disponíveis para você!
 	</p>
 	<ion-fab slot="fixed" vertical="bottom" horizontal="center">
 		<ion-fab-button color="tertiary" @click="make_appointment()">
@@ -169,11 +170,8 @@
 			addMinutes(slot, slot_duration_minutes)
 		).seconds;
 
-		if (
-			!existing_appointments ||
-			slot_start < Timestamp.fromDate(new Date()).seconds
-		) {
-			selected_service.value = null;
+		if (existing_appointments.length == 0) return;
+		if (slot_start < Timestamp.fromDate(new Date()).seconds) {
 			return true;
 		}
 
