@@ -14,7 +14,7 @@
 			<ion-list>
 				<ion-item v-if="!has_appointments">
 					Você ainda não possui nenhum agendamento. <br />
-					Vá na aba "Agendar" para marcar um horário
+					Vá na aba "Agendar" para marcar um horário.
 				</ion-item>
 				<ion-item v-else v-for="appointment of user_appointments">
 					<ion-label>
@@ -26,7 +26,10 @@
 								})
 							}}
 						</span>
-						<span class="service">{{ appointment.service }}</span>
+						<span class="service"
+							>{{ appointment.service }} - Com
+							{{ appointment.staff }}</span
+						>
 						<span class="time">
 							{{
 								format(appointment.start, `p`, { locale: ptBR })
@@ -97,6 +100,7 @@
 						id: doc.id,
 						date: appointment_data.date.toDate(),
 						service: appointment_data.service,
+						staff: appointment_data.staff_name,
 						start: appointment_data.start_time.toDate(),
 						end: appointment_data.end_time.toDate(),
 					};
