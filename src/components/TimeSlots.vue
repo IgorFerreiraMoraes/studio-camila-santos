@@ -39,7 +39,6 @@
 			@click="handle_slot_selection(slot)"
 		>
 			<p>
-				{{ available_slots.length }}
 				{{ format(slot, 'kk:mm') }} -
 				{{
 					format(addMinutes(slot, selected_service.duration), 'kk:mm')
@@ -87,7 +86,7 @@
 	const router = useRouter();
 	const props = defineProps(['selected_day']);
 
-	const available_slots = ref();
+	const available_slots = ref([]);
 	const selected_slot = ref();
 	const selected_service = ref();
 	const selected_staff = ref();
@@ -169,11 +168,10 @@
 		const slot_end = Timestamp.fromDate(
 			addMinutes(slot, slot_duration_minutes)
 		).seconds;
-
-		if (existing_appointments.length == 0) return;
 		if (slot_start < Timestamp.fromDate(new Date()).seconds) {
 			return true;
 		}
+		if (existing_appointments.length == 0) return;
 
 		return existing_appointments.some((appointment) => {
 			const appointment_start = appointment.start_time.seconds;
