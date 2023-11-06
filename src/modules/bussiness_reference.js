@@ -174,16 +174,20 @@ export const staff_reference = {
 	Igor: {
 		name: 'Igor',
 		services: [
-			{ name: 'Manicure', duration: 30 },
-			{ name: 'Depilação Completa', duration: 60 },
+			{ name: 'Limpeza de Pele', duration: 180 },
+			{ name: 'Pé e Mão', duration: 180 },
 		],
 		id: 1,
 	},
 	Camila: {
 		name: 'Camila',
 		services: [
-			{ name: 'Manicure', duration: 30 },
-			{ name: 'Depilação Completa', duration: 60 },
+			{ name: 'Limpeza de Pele', duration: 60 },
+			{ name: 'Pé e Mão', duration: 75 },
+			{ name: 'Mão', duration: 40 },
+			{ name: 'Pé', duration: 40 },
+			{ name: 'Plástica nos Pés', duration: 35 },
+			{ name: 'Escalada Pés', duration: 40 },
 		],
 		id: 2,
 	},
