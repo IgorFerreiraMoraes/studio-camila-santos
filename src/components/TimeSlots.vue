@@ -46,6 +46,9 @@
 			</p>
 		</li>
 	</ul>
+    <p class="cta" v-else-if="available_slots.length == 0 && selected_staff && selected_service">
+    Parece que não temos como te encaixar no dia escolhido. Selecione outro dia!
+    </p>
 	<p class="cta" v-else>
 		Pronta para brilhar? <br />
 		Escolha uma profissional e um procedimento que veremos se há horários
