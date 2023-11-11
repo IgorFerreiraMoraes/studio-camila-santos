@@ -46,16 +46,22 @@
 			</p>
 		</li>
 	</ul>
-    <p class="cta" v-else-if="available_slots.length == 0 && selected_staff && selected_service">
-    Parece que não temos como te encaixar no dia escolhido. Selecione outro dia!
-    </p>
+	<p
+		class="cta"
+		v-else-if="
+			available_slots.length == 0 && selected_staff && selected_service
+		"
+	>
+		Parece que não temos como te encaixar no dia escolhido. Selecione outro
+		dia!
+	</p>
 	<p class="cta" v-else>
 		Pronta para brilhar? <br />
 		Escolha uma profissional e um procedimento que veremos se há horários
 		disponíveis para você!
 	</p>
 	<ion-fab slot="fixed" vertical="bottom" horizontal="center">
-		<ion-fab-button color="tertiary" @click="make_appointment()">
+		<ion-fab-button color="tertiary" @click="confirm_appointment()">
 			<ion-icon :icon="addOutline"></ion-icon>
 		</ion-fab-button>
 	</ion-fab>
@@ -69,6 +75,7 @@
 		IonIcon,
 		IonTitle,
 		IonToolbar,
+		alertController,
 	} from '@ionic/vue';
 	import { addOutline } from 'ionicons/icons';
 	import { ref, watch } from 'vue';
@@ -85,6 +92,7 @@
 		Timestamp,
 	} from 'firebase/firestore';
 	import { addMinutes, eachMinuteOfInterval, format } from 'date-fns';
+	import ptBR from 'date-fns/locale/pt-BR';
 
 	const router = useRouter();
 	const props = defineProps(['selected_day']);
@@ -199,14 +207,37 @@
 		selected_service.value = null;
 	});
 
-	async function make_appointment() {
+	async function confirm_appointment() {
 		if (
 			!selected_service.value ||
 			!selected_slot.value ||
 			!selected_staff.value
 		)
 			return;
+		const confirm_alert = await alertController.create({
+			header: 'Marcar nesta data e horário?',
+			subHeader: `Dia ${format(props.selected_day, `d 'de' MMMM`, {
+				locale: ptBR,
+				addSuffix: true,
+			})} às ${format(selected_slot.value, `p`, { locale: ptBR })}`,
+			buttons: [
+				{
+					text: 'Sim',
+					role: 'submit',
+					handler: async () => {
+						make_appointment();
+					},
+				},
+				{
+					text: 'Não',
+					role: 'cancel',
+				},
+			],
+		});
+		await confirm_alert.present();
+	}
 
+	async function make_appointment() {
 		const appointment_id = `${auth.currentUser.uid}_${
 			selected_service.value.name
 		}_${new Date().getTime()}`;
