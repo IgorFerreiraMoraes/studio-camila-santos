@@ -16,10 +16,11 @@ const admin = require('firebase-admin');
 admin.initializeApp();
 
 exports.delete_past_appointments = onSchedule(
-	'every day 19:00',
+	'every day 22:00',
 	async (event) => {
-		const now = new Date();
-
+		const now = new Date(
+			new Date().toLocaleString({ timeZone: 'America/Sao_Paulo' })
+		);
 		const appointments = admin.firestore().collection('appointments');
 		const past_appointments_query = appointments.where(
 			'end_time',
