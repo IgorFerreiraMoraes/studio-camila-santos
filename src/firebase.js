@@ -1,6 +1,7 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
+import { getMessaging } from 'firebase/messaging';
 import { initializeAppCheck, ReCaptchaV3Provider } from 'firebase/app-check';
 
 const firebaseConfig = {
@@ -21,3 +22,4 @@ const appCheck = initializeAppCheck(app, {
 
 export const auth = getAuth(app);
 export const database = getFirestore(app);
+export const messaging = getMessaging(app);
