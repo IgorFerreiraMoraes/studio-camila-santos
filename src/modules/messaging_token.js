@@ -13,7 +13,6 @@ export async function get_and_write_user_messaging_token() {
 
 	if (!current_token) Notification.requestPermission();
 	if (!user_id) return;
-
 	write_user_token(current_token);
 }
 
@@ -24,7 +23,9 @@ onAuthStateChanged(auth, (user) => {
 });
 
 async function write_user_token(token) {
-	if (await user_has_messaging_token()) return;
+	const user_existing_token = await user_has_messaging_token;
+	if (!user_existing_token || user_existing_token == token) return;
+
 	await updateDoc(doc(database, 'users', user_id), {
 		messaging_token: token,
 	});
