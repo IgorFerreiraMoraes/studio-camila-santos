@@ -70,17 +70,23 @@
 		IonHeader,
 	} from '@ionic/vue';
 	import { reactive } from 'vue';
-	import { collection, onSnapshot, orderBy, query, where } from 'firebase/firestore';
+	import {
+		collection,
+		onSnapshot,
+		orderBy,
+		query,
+		where,
+	} from 'firebase/firestore';
 	import { database } from '../firebase.js';
 	import { format } from 'date-fns';
 	import { ptBR } from 'date-fns/locale';
 
 	const appointments = reactive([]);
-    const id = 2;
+	const id = 2;
 
 	const appointments_query = query(
 		collection(database, 'appointments'),
-        where("staff_id", "==", id),
+		where('staff_id', '==', id),
 		orderBy('date'),
 		orderBy('start_time')
 	);
