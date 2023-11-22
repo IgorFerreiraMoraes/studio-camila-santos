@@ -13,6 +13,14 @@
 
 	const messaging = getMessaging();
 	onMessage(messaging, (payload) => {
-		console.log('Message received. ', payload);
+		const notification_title = payload.notification.title;
+		const notification_options = {
+			body: payload.notification.body,
+			image: payload.notification.image,
+		};
+		const notification = new Notification(
+			notification_title,
+			notification_options
+		);
 	});
 </script>
