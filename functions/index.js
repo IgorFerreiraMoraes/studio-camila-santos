@@ -1,19 +1,11 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * const {onCall} = require("firebase-functions/v2/https");
- * const {onDocumentWritten} = require("firebase-functions/v2/firestore");
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
-
-// The Cloud Functions for Firebase SDK to create Cloud Functions and triggers.
 const { logger } = require('firebase-functions');
 const { onSchedule } = require('firebase-functions/v2/scheduler');
 
 // The Firebase Admin SDK to access Firestore.
 const admin = require('firebase-admin');
-admin.initializeApp();
+admin.initializeApp({
+	credential: admin.credential.applicationDefault(),
+});
 
 exports.delete_past_appointments = onSchedule(
 	'every day 22:00',
@@ -38,3 +30,25 @@ exports.delete_past_appointments = onSchedule(
 		return null;
 	}
 );
+
+exports.send_birthday_message = onSchedule('every day 10:00', async (event) => {
+	const today = new Date();
+
+	const users = admin.firestore().collection('users');
+	const birthday_users_query = users
+		.where('birth_day', '==', today.getDate().toString())
+		.where('birth_month', '==', (today.getMonth() + 1).toString());
+	const birthday_users = await birthday_users_query.get();
+
+	birthday_users.forEach((doc) => {
+		const user = doc.data();
+		const message = {
+			notification: {
+				title: `Feliz Aniversário, ${user.name}! 💗`,
+				body: 'Nós do Studio Camila Santos te desejamos tudo de bom',
+			},
+			token: user.messaging_token,
+		};
+		admin.messaging().send(message);
+	});
+});
