@@ -29,8 +29,5 @@
 	import TimeSlots from '../components/TimeSlots.vue';
 	import DatePicker from '../components/DatePicker.vue';
 
-	import { get_and_write_user_messaging_token } from '../modules/messaging_token';
-
 	const selected_day = ref();
-	get_and_write_user_messaging_token();
 </script>
