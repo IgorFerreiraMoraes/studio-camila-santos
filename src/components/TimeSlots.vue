@@ -88,9 +88,10 @@
 		setDoc,
 		query,
 		where,
-		or,
 		onSnapshot,
 		Timestamp,
+		or,
+		and,
 	} from 'firebase/firestore';
 	import { addMinutes, eachMinuteOfInterval, format } from 'date-fns';
 	import ptBR from 'date-fns/locale/pt-BR';
@@ -156,10 +157,12 @@
 	function fetch_existing_appointments(day) {
 		const day_query = query(
 			collection(database, 'appointments'),
-			where('date', '==', day),
-			or(
-				where('staff_id', '==', selected_staff.value.id),
-				where('client_if', '==', auth.currentUser.uid)
+			and(
+				where('date', '==', day),
+				or(
+					where('staff_id', '==', selected_staff.value.id),
+					where('client_id', '==', auth.currentUser.uid)
+				)
 			)
 		);
 
