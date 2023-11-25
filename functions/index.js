@@ -44,8 +44,8 @@ exports.send_birthday_message = onSchedule('every day 10:00', async (event) => {
 		const user = doc.data();
 		const message = {
 			notification: {
-				title: `Feliz Aniversário, ${user.name}! 💗`,
-				body: 'Nós do Studio Camila Santos te desejamos tudo de bom',
+				title: `Parabéns, ${user.name}!`,
+				body: 'Desejo que seu aniversário seja o início de um ano incrível, cheio de boas vibrações e momentos memoráveis. Felicidades! \n Studio Camila Santos',
 			},
 			token: user.messaging_token,
 		};
