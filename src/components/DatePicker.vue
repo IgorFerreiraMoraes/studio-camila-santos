@@ -3,11 +3,16 @@
 		class="ion-justify-content-center ion-margin-vertical"
 		id="select-month"
 	>
-		<button @click="change_month(-1)" v-if="month_index != 0">
+		<button
+			aria-label="Selecionar mês anterior"
+			@click="change_month(-1)"
+			v-if="month_index != 0"
+		>
 			<ion-icon :icon="chevronBack"></ion-icon>
 		</button>
 		{{ selected_month }}
 		<button
+			aria-label="Selecionar próximo mês"
 			@click="change_month(1)"
 			v-if="month_index != months.length - 1"
 		>

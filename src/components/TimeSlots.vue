@@ -61,7 +61,11 @@
 		disponíveis para você!
 	</p>
 	<ion-fab slot="fixed" vertical="bottom" horizontal="center">
-		<ion-fab-button color="tertiary" @click="confirm_appointment()">
+		<ion-fab-button
+			aria-label="Fazer agendamento"
+			color="tertiary"
+			@click="confirm_appointment()"
+		>
 			<ion-icon :icon="addOutline"></ion-icon>
 		</ion-fab-button>
 	</ion-fab>
