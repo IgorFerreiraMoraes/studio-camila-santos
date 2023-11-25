@@ -23,6 +23,7 @@ npm-debug.log*
 /.sass-cache
 /.sourcemaps
 /.versions
+/.firebase
 /.vscode/*
 !/.vscode/extensions.json
 /coverage
