@@ -1,4 +1,3 @@
-import legacy from '@vitejs/plugin-legacy';
 import vue from '@vitejs/plugin-vue';
 import path from 'path';
 import { defineConfig } from 'vite';
@@ -30,7 +29,7 @@ const manifest: Partial<VitePWAOptions> = {
 
 // https://vitejs.dev/config/
 export default defineConfig({
-	plugins: [vue(), legacy(), VitePWA(manifest)],
+	plugins: [vue(), VitePWA(manifest)],
 	resolve: {
 		alias: {
 			'@': path.resolve(__dirname, './src'),
@@ -40,6 +39,12 @@ export default defineConfig({
 		rollupOptions: {
 			output: {
 				manualChunks(id) {
+					if (id.includes('firebase/'))
+						return id
+							.toString()
+							.split('firebase/')[1]
+							.split('/')[0]
+							.toString();
 					if (id.includes('node_modules'))
 						return id
 							.toString()
