@@ -104,6 +104,13 @@
 	const selected_service = ref();
 	const selected_staff = ref();
 
+	watch(selected_service, async () => {
+		if (selected_service.value) render_slots();
+	});
+	watch(props, () => {
+		selected_service.value = null;
+	});
+
 	function handle_staff_selection($event) {
 		selected_staff.value = $event.detail.value;
 		selected_service.value = null;
@@ -121,6 +128,7 @@
 			selected_service.value.duration
 		);
 	}
+
 	async function generate_slots(
 		start_hour,
 		ending_hour,
@@ -154,6 +162,7 @@
 
 		return available_slots_in_interval;
 	}
+
 	function fetch_existing_appointments(day) {
 		const day_query = query(
 			collection(database, 'appointments'),
@@ -177,6 +186,7 @@
 			});
 		});
 	}
+
 	function is_slot_overlapping_with_appointments(
 		slot,
 		slot_duration_minutes,
@@ -206,13 +216,6 @@
 			);
 		});
 	}
-
-	watch(selected_service, async () => {
-		if (selected_service.value) render_slots();
-	});
-	watch(props, () => {
-		selected_service.value = null;
-	});
 
 	async function confirm_appointment() {
 		if (
