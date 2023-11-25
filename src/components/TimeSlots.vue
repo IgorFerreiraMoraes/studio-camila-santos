@@ -88,6 +88,7 @@
 		setDoc,
 		query,
 		where,
+		or,
 		onSnapshot,
 		Timestamp,
 	} from 'firebase/firestore';
@@ -156,7 +157,10 @@
 		const day_query = query(
 			collection(database, 'appointments'),
 			where('date', '==', day),
-			where('staff_id', '==', selected_staff.value.id)
+			or(
+				where('staff_id', '==', selected_staff.value.id),
+				where('client_if', '==', auth.currentUser.uid)
+			)
 		);
 
 		return new Promise((resolve) => {
