@@ -1,4 +1,31 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400&family=Playfair+Display&display=swap');
+@font-face {
+	font-display: swap;
+	font-family: 'Montserrat';
+	font-style: normal;
+	font-weight: 300;
+	src: url('fonts/montserrat-v26-latin-300.woff2') format('woff2');
+}
+@font-face {
+	font-display: swap;
+	font-family: 'Montserrat';
+	font-style: normal;
+	font-weight: 400;
+	src: url('fonts/montserrat-v26-latin-regular.woff2') format('woff2');
+}
+@font-face {
+	font-display: swap;
+	font-family: 'Playfair Display';
+	font-style: normal;
+	font-weight: 400;
+	src: url('fonts/playfair-display-v36-latin-regular.woff2') format('woff2');
+}
+@font-face {
+	font-display: swap;
+	font-family: 'Playfair Display';
+	font-style: normal;
+	font-weight: 600;
+	src: url('fonts/playfair-display-v36-latin-600.woff2') format('woff2');
+}
 
 ::-webkit-scrollbar {
 	width: 8px;
