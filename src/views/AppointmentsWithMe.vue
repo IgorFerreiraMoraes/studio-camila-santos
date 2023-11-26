@@ -77,12 +77,12 @@
 		query,
 		where,
 	} from 'firebase/firestore';
-	import { database } from '../firebase.js';
+	import { database, auth } from '../firebase.js';
 	import { format } from 'date-fns';
 	import { ptBR } from 'date-fns/locale';
 
 	const appointments = reactive([]);
-	const id = 2;
+	const id = auth.currentUser.uid;
 
 	const appointments_query = query(
 		collection(database, 'appointments'),

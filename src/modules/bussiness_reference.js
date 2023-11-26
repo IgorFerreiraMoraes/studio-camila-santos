@@ -1,13 +1,5 @@
 export const services_reference = 2;
 export const staff_reference = {
-	Igor: {
-		name: 'Igor',
-		services: [
-			{ name: 'Limpeza de Pele', duration: 180 },
-			{ name: 'Pé e Mão', duration: 180 },
-		],
-		id: 1,
-	},
 	Camila: {
 		name: 'Camila',
 		services: [
@@ -25,15 +17,15 @@ export const staff_reference = {
 			{ name: 'Massagem Relaxante', duration: 60 },
 			{ name: 'Hidra Gloos', duration: 60 },
 		],
-		id: 2,
+		id: 'XG9giWXCM7TZkIcKzFwztsBO1ay1',
 	},
-    Mayara: {
-        name: 'Mayara',
-        services: [ 
+	Mayara: {
+		name: 'Mayara',
+		services: [
 			{ name: 'Aplicação Extensão de Cílios', duration: 180 },
 			{ name: 'Manutenção Extensão de Cílios', duration: 120 },
 			{ name: 'Remoção Extensão de Cílios', duration: 60 },
-        ],
-        id: 3,
-    }
+		],
+		id: 'dvNpU3F0sKSVBM8nLbVzxa05G2C3',
+	},
 };
