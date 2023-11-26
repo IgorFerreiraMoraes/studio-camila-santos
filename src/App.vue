@@ -10,7 +10,6 @@
 	import { get_and_write_user_messaging_token } from './modules/messaging_token';
 
 	get_and_write_user_messaging_token();
-
 	const messaging = getMessaging();
 	onMessage(messaging, (payload) => {
 		const notification_title = payload.notification.title;
@@ -22,5 +21,9 @@
 			notification_title,
 			notification_options
 		);
+	});
+
+	window.addEventListener('beforeinstallprompt', (e) => {
+		e.prompt();
 	});
 </script>
