@@ -3,18 +3,18 @@
 		<ion-tabs>
 			<ion-router-outlet></ion-router-outlet>
 			<ion-tab-bar slot="bottom">
-				<ion-tab-button tab="Home" href="/home">
+				<ion-tab-button tab="Home" href="/inicio">
 					<ion-icon :icon="calendarNumberOutline" />
 					<ion-label>Agendar</ion-label>
 				</ion-tab-button>
-				<ion-tab-button tab="MyAppointments" href="/my-appointments">
+				<ion-tab-button tab="MyAppointments" href="/meus-agendamentos">
 					<ion-icon :icon="bookmarkOutline" />
 					<ion-label>Minhas Datas</ion-label>
 				</ion-tab-button>
 
 				<ion-tab-button
 					tab="AppointmentsWithMe"
-					href="/appointments-with-me"
+					href="/agendamentos-comigo"
 					v-if="is_user_admin"
 				>
 					<ion-icon :icon="roseOutline" />

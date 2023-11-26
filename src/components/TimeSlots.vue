@@ -270,7 +270,7 @@
 			),
 		});
 		render_slots();
-		router.push('/thanks');
+		router.push('/obrigada');
 	}
 </script>
 <style scoped>

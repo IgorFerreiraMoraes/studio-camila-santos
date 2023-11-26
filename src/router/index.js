@@ -8,7 +8,7 @@ const routes = [
 		component: () => import('../views/Tabs.vue'),
 		children: [
 			{
-				path: 'home',
+				path: 'inicio',
 				name: 'Home',
 				component: () => import('../views/HomePage.vue'),
 				meta: {
@@ -16,7 +16,7 @@ const routes = [
 				},
 			},
 			{
-				path: 'my-appointments',
+				path: 'meus-agendamentos',
 				name: 'MyAppointments',
 				component: () => import('../views/MyAppointments.vue'),
 				meta: {
@@ -24,7 +24,7 @@ const routes = [
 				},
 			},
 			{
-				path: 'appointments-with-me',
+				path: 'agendamentos-comigo',
 				name: 'AppointmentsWithMe',
 				component: () => import('../views/AppointmentsWithMe.vue'),
 				meta: {
@@ -32,7 +32,7 @@ const routes = [
 				},
 			},
 		],
-		redirect: '/home',
+		redirect: '/inicio',
 	},
 	{
 		path: '/login',
@@ -40,12 +40,17 @@ const routes = [
 		component: () => import('../views/Login.vue'),
 	},
 	{
-		path: '/thanks',
+		path: '/obrigada',
 		name: 'Thanks',
 		component: () => import('../views/Thanks.vue'),
 		meta: {
 			requiresAuth: true,
 		},
+	},
+	{
+		path: '/home',
+		name: 'Old',
+		redirect: '/inicio',
 	},
 ];
 
