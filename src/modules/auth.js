@@ -17,11 +17,13 @@ function sign_in_with_provider(provider) {
 }
 
 const check_user_role = async (user) => {
-	const user_document = await getDoc(
-		doc(collection(database, 'users'), user.uid)
-	);
-	is_user_admin.value =
-		user_document.exists() && user_document.data().is_admin;
+	try {
+		const user_document = await getDoc(
+			doc(collection(database, 'users'), user.uid)
+		);
+		is_user_admin.value =
+			user_document.exists() && user_document.data().is_admin;
+	} catch (error) {}
 };
 
 onAuthStateChanged(auth, (user) => {

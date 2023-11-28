@@ -24,7 +24,7 @@
 			v-for="day in days_in_selected_month"
 			:key="day.getTime()"
 			:day="day"
-			:class="{ selected: same_day(selected_day, day) }"
+			:class="{ selected: is_same_day(selected_day, day) }"
 			@click="selected_day = day"
 		></Day>
 	</div>
@@ -45,54 +45,81 @@
 
 	const MONTHS_IN_ADVANCE = 4;
 
-	const emit = defineEmits(['select_day']);
+	const { months, days_in_month } = initialize_months();
+	const {
+		month_index,
+		selected_month,
+		days_in_selected_month,
+		selected_day,
+	} = initialize_selected();
 
-	const today = new Date();
-	const schedule_limit = addMonths(today, MONTHS_IN_ADVANCE);
-	const months = ref([]);
-	const days_in_month = ref([]);
-
-	let current_month = today;
-	while (current_month < schedule_limit) {
-		let start_date = startOfMonth(current_month);
-		if (current_month == today) {
-			start_date = today;
-		}
-		let end_date = endOfMonth(current_month);
-		days_in_month.value.push(
-			eachDayOfInterval({ start: start_date, end: end_date })
-		);
-		months.value.push(
-			format(current_month, 'MMMM, yyyy', { locale: ptBR })
-		);
-		current_month = addMonths(current_month, 1);
-	}
-
-	const month_index = ref(0);
-	const selected_month = ref(months.value[month_index.value]);
-	const days_in_selected_month = ref(days_in_month.value[month_index.value]);
 	watch(month_index, () => {
 		selected_month.value = months.value[month_index.value];
 		days_in_selected_month.value = days_in_month.value[month_index.value];
 	});
 
+	const emit = defineEmits(['select_day']);
+	watch(
+		selected_day,
+		() => {
+			emit('select_day', selected_day.value);
+		},
+		{ immediate: true }
+	);
+
+	function initialize_months() {
+		const today = new Date();
+		const schedule_limit = addMonths(today, MONTHS_IN_ADVANCE);
+		const months = ref([]);
+		const days_in_month = ref([]);
+
+		let current_month = today;
+
+		while (current_month < schedule_limit) {
+			let start_date = startOfMonth(current_month);
+			if (current_month == today) start_date = today;
+
+			const end_date = endOfMonth(current_month);
+
+			days_in_month.value.push(
+				eachDayOfInterval({ start: start_date, end: end_date })
+			);
+			months.value.push(
+				format(current_month, 'MMMM, yyyy', { locale: ptBR })
+			);
+			current_month = addMonths(current_month, 1);
+		}
+
+		return { months, days_in_month };
+	}
+
+	function initialize_selected() {
+		const month_index = ref(0);
+		const selected_month = ref(months.value[month_index.value]);
+		const days_in_selected_month = ref(
+			days_in_month.value[month_index.value]
+		);
+		const selected_day = ref(days_in_selected_month.value[0]);
+
+		return {
+			month_index,
+			selected_month,
+			days_in_selected_month,
+			selected_day,
+		};
+	}
+
 	function change_month(months_to_change) {
 		month_index.value += months_to_change;
 	}
 
-	function same_day(day1, day2) {
+	function is_same_day(date1, date2) {
 		return (
-			day1.getFullYear() == day2.getFullYear() &&
-			day1.getMonth() == day2.getMonth() &&
-			day1.getDate() == day2.getDate()
+			date1.getFullYear() == date2.getFullYear() &&
+			date1.getMonth() == date2.getMonth() &&
+			date1.getDate() == date2.getDate()
 		);
 	}
-
-	const selected_day = ref('');
-	watch(selected_day, () => {
-		emit('select_day', selected_day.value);
-	});
-	selected_day.value = days_in_selected_month.value[0];
 </script>
 <style scoped>
 	#select-month {

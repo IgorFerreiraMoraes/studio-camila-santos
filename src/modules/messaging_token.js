@@ -5,7 +5,7 @@ import { onAuthStateChanged } from 'firebase/auth';
 
 let user_id;
 
-export async function get_and_write_user_messaging_token() {
+export async function check_user_messaging_token() {
 	const current_token = await getToken(messaging, {
 		vapidKey:
 			'BJlFonPC6dTp5ZJTgcoohFvRH_gC1nSAhH4qQOci5oGS7YvgVmEzHWYAyjUa8PPj6D7Pwbg5A2nwelm29y0GVdQ',

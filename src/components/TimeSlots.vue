@@ -121,7 +121,6 @@
 	}
 	function handle_slot_selection(slot) {
 		if (!selected_service.value) return;
-
 		selected_slot.value = slot;
 	}
 
@@ -138,33 +137,34 @@
 		ending_hour,
 		slot_duration_minutes
 	) {
+		const interval = generate_interval(start_hour, ending_hour);
+
+		const all_slots_in_interval = eachMinuteOfInterval(interval, {
+			step: slot_duration_minutes,
+		});
+		all_slots_in_interval.pop(); // a função acima sempre gera um slot a mais
+
+		const existing_appointments = await fetch_existing_appointments(
+			props.selected_day
+		);
+
+		const available_slots_in_interval = filter_overlapping_slots(
+			all_slots_in_interval,
+			slot_duration_minutes,
+			existing_appointments
+		);
+
+		return available_slots_in_interval;
+	}
+
+	function generate_interval(start_hour, ending_hour) {
 		const selected_day_start = new Date(props.selected_day);
 		const selected_day_end = new Date(props.selected_day);
 
 		selected_day_start.setHours(start_hour);
 		selected_day_end.setHours(ending_hour);
 
-		const interval = { start: selected_day_start, end: selected_day_end };
-
-		const all_slots_in_interval = eachMinuteOfInterval(interval, {
-			step: slot_duration_minutes,
-		});
-		all_slots_in_interval.pop();
-
-		const existing_appointments = await fetch_existing_appointments(
-			props.selected_day
-		);
-		const available_slots_in_interval = all_slots_in_interval.filter(
-			(slot) => {
-				return !is_slot_overlapping_with_appointments(
-					slot,
-					slot_duration_minutes,
-					existing_appointments
-				);
-			}
-		);
-
-		return available_slots_in_interval;
+		return { start: selected_day_start, end: selected_day_end };
 	}
 
 	function fetch_existing_appointments(day) {
@@ -180,15 +180,30 @@
 		);
 
 		return new Promise((resolve) => {
-			const existing_appointments = [];
+			let existing_appointments = [];
 
 			const appointments_listener = onSnapshot(day_query, (snap) => {
-				snap.forEach((appointment) => {
-					existing_appointments.push(appointment.data());
-				});
+				existing_appointments = snap.docs.map((appointment) =>
+					appointment.data()
+				);
 				resolve(existing_appointments);
 			});
 		});
+	}
+
+	function filter_overlapping_slots(
+		slots,
+		slot_duration_minutes,
+		existing_appointments
+	) {
+		return slots.filter(
+			(slot) =>
+				!is_slot_overlapping_with_appointments(
+					slot,
+					slot_duration_minutes,
+					existing_appointments
+				)
+		);
 	}
 
 	function is_slot_overlapping_with_appointments(
@@ -200,25 +215,29 @@
 		const slot_end = Timestamp.fromDate(
 			addMinutes(slot, slot_duration_minutes)
 		).seconds;
+
 		if (slot_start < Timestamp.fromDate(new Date()).seconds) {
 			return true;
 		}
-		if (existing_appointments.length == 0) return;
+		if (!existing_appointments.length) return false;
 
-		return existing_appointments.some((appointment) => {
-			const appointment_start = appointment.start_time.seconds;
-			const appointment_end = appointment.end_time.seconds;
+		return existing_appointments.some((appointment) =>
+			are_intervals_overlapping(
+				slot_start,
+				slot_end,
+				appointment.start_time.seconds,
+				appointment.end_time.seconds
+			)
+		);
+	}
 
-			return (
-				(slot_start <= appointment_start &&
-					slot_end >= appointment_end) ||
-				(slot_start > appointment_start &&
-					slot_end < appointment_end) ||
-				(slot_start <= appointment_start &&
-					slot_end > appointment_start) ||
-				(slot_start < appointment_end && slot_end >= appointment_end)
-			);
-		});
+	function are_intervals_overlapping(start1, end1, start2, end2) {
+		return (
+			(start1 <= start2 && end1 >= end2) ||
+			(start1 > start2 && end1 < end2) ||
+			(start1 <= start2 && end1 > start2) ||
+			(start1 < end2 && end1 >= end2)
+		);
 	}
 
 	async function confirm_appointment() {
@@ -228,7 +247,13 @@
 			!selected_staff.value
 		)
 			return;
-		const confirm_alert = await alertController.create({
+
+		const confirm_alert = await create_confirmation_alert();
+		await confirm_alert.present();
+	}
+
+	function create_confirmation_alert() {
+		return alertController.create({
 			header: 'Marcar nesta data e horário?',
 			subHeader: `Dia ${format(props.selected_day, `d 'de' MMMM`, {
 				locale: ptBR,
@@ -248,7 +273,6 @@
 				},
 			],
 		});
-		await confirm_alert.present();
 	}
 
 	async function make_appointment() {

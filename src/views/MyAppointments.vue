@@ -92,11 +92,10 @@
 		const user_appointments_snap = onSnapshot(
 			user_appointments_query,
 			(snap) => {
-				const updated_user_appointments = [];
-				snap.forEach((doc) => {
+				const updated_user_appointments = snap.docs.map((doc) => {
 					const appointment_data = doc.data();
 
-					const user_appointment = {
+					return {
 						id: doc.id,
 						date: appointment_data.date.toDate(),
 						service: appointment_data.service,
@@ -104,8 +103,8 @@
 						start: appointment_data.start_time.toDate(),
 						end: appointment_data.end_time.toDate(),
 					};
-					updated_user_appointments.push(user_appointment);
 				});
+
 				user_appointments.length = 0;
 				user_appointments.push(...updated_user_appointments);
 			}
@@ -132,6 +131,7 @@
 		});
 		await delete_alert.present();
 	}
+
 	async function delete_appointment(id) {
 		await deleteDoc(doc(appointments_collection, id));
 	}

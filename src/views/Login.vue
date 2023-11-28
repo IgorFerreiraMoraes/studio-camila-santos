@@ -68,6 +68,11 @@
 	const google = new GoogleAuthProvider();
 	const facebook = new FacebookAuthProvider();
 
+	const MIN_MONTH = 1;
+	const MAX_MONTH = 12;
+	const MIN_DAY = 1;
+	const MAX_DAY = 31;
+
 	onAuthStateChanged(auth, (user) => {
 		if (user) {
 			handle_user_login();
@@ -91,7 +96,12 @@
 	}
 
 	async function show_birthday_alert() {
-		const birthday_alert = await alertController.create({
+		const birthday_alert = await create_birthday_alert();
+		birthday_alert.present();
+	}
+
+	function create_birthday_alert() {
+		return alertController.create({
 			header: 'Quando é Seu Aniversário?',
 			subHeader: 'Receba uma mensagem especial no dia!',
 			inputs: [
@@ -99,15 +109,15 @@
 					name: 'month',
 					type: 'number',
 					placeholder: 'Mês (1 - 12)',
-					min: 1,
-					max: 12,
+					min: MIN_MONTH,
+					max: MAX_MONTH,
 				},
 				{
 					name: 'day',
 					type: 'number',
 					placeholder: 'Dia (1 - 31)',
-					min: 1,
-					max: 31,
+					min: MIN_DAY,
+					max: MAX_DAY,
 				},
 			],
 			buttons: [
@@ -123,33 +133,33 @@
 			backdropDismiss: false,
 			translucent: true,
 		});
-		birthday_alert.present();
 	}
+
 	function create_user_doc(data) {
-		if (is_valid_date(data.month, data.day)) {
-			const user = auth.currentUser;
+		if (!is_valid_date(data.month, data.day)) return;
 
-			const user_doc = doc(database, 'users', user.uid);
-			setDoc(user_doc, {
-				birth_day: data.day,
-				birth_month: data.month,
-				id: user.uid,
-				name: user.displayName,
-			});
+		const user = auth.currentUser;
+		const user_doc = doc(database, 'users', user.uid);
+		setDoc(user_doc, {
+			birth_day: data.day,
+			birth_month: data.month,
+			id: user.uid,
+			name: user.displayName,
+		});
 
-			return true;
-		}
+		return true;
 	}
+
 	function is_valid_date(month, day) {
 		month = Number(month);
 
 		if (
 			!month ||
 			!day ||
-			month < 1 ||
-			month > 12 ||
-			day < 1 ||
-			day > 31 ||
+			month < MIN_MONTH ||
+			month > MAX_MONTH ||
+			day < MIN_DAY ||
+			day > MAX_DAY ||
 			([4, 6, 9, 11].includes(month) && day > 30) ||
 			(month == 2 && day > 28)
 		)

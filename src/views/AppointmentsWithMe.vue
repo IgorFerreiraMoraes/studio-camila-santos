@@ -90,6 +90,7 @@
 		orderBy('date'),
 		orderBy('start_time')
 	);
+
 	const appointments_snapshot = onSnapshot(
 		appointments_query,
 		(appointments_collection) => {
