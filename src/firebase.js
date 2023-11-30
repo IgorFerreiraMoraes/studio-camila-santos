@@ -23,3 +23,6 @@ const appCheck = initializeAppCheck(app, {
 export const auth = getAuth(app);
 export const database = getFirestore(app);
 export const messaging = getMessaging(app);
+
+import { getFunctions } from 'firebase/functions';
+export const functions = getFunctions(app);
