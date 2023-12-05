@@ -56,8 +56,12 @@ exports.send_birthday_message = onSchedule('every day 10:00', async (event) => {
 
 exports.set_admin = onCall(async (request) => {
 	const new_admin_email = request.data.email;
-	const new_admin_uid = await get_user_id_by_email(new_admin_email);
-
+    let new_admin_uid
+    try {
+	    new_admin_uid = await get_user_id_by_email(new_admin_email);
+    } catch {
+        new_admin_uid = null
+    }
 	if (!new_admin_uid)
 		return `Não foi possível encontrar um usuário com o email ${new_admin_email}`;
 
