@@ -1,10 +1,10 @@
 # Studio Camila Santos
 
-Um aplicativo projetado para simplificar o agendamento e o gerenciamento de clientes em um salão de beleza, desenvolvido com Vue.js, Ionic e Firebase.
+Bem-vindo ao aplicativo Studio Camila Santos – uma solução desenvolvida para a experiência do salão de beleza [Studio Camila Santos](https://www.instagram.com/studiocamila_santos/). Desenvolvido com Vue.js, Ionic e Firebase para aprimorar o agendamento e agilizar o gerenciamento de clientes do salão.
 
-## Introdução
+## Visão Geral
 
-Gerenciar um cronograma pode ser desafiador, especialmente quando há detalhes que são difíceis de acompanhar com métodos tradicionais. Este aplicativo visa facilitar a vida da dona (Camila) e das funcionárias do salão de beleza. Ele permite que os clientes escolham serviços e horários de agendamento, enquanto a equipe do salão pode acessar facilmente suas agendas e informações dos clientes.
+Gerenciar um salão é não é nada fácil, especialmente quando há detalhes que são complicados de acompanhar com métodos tradicionais. Este aplicativo visa ser uma solução sob medida para facilitar a vida da dona (Camila) e das funcionárias do salão de beleza. Os clientes podem facilmente agendar compromissos e escolher serviços, enquanto a equipe do salão pode gerenciar com eficiência agendas e informações dos clientes.
 
 ## Índice
 
@@ -15,14 +15,14 @@ Gerenciar um cronograma pode ser desafiador, especialmente quando há detalhes q
 
 -   **Para Clientes**:
 
-    -   Faça login com uma conta do Google ou Facebook.
-    -   Escolha a data, horário e serviço desejados.
-    -   Receba mensagens especiais de aniversário.
-    -   Acompanhe todos os seus agendamentos.
+    -   **Autenticação Simples:** Faça login com segurança usando sua conta do Google ou Facebook.
+    -   **Reserva sem Esforço:** Escolha a data, horário e serviço desejados.
+    -   **Atenção Personalizada** Receba mensagens especiais de aniversário.
+    -   **Acompahamento de Compromissos:** Tenha um registro de todos os seus agendamentos.
 
 -   **Para Funcionárias**:
 
-    -   Visualize todos os agendamentos associados a você.
+    -   **Agenda Acessível:** Visualize facilmente todos os agendamentos associados a você.
 
 -   **Tarefas Automatizadas**:
     -   Envio de mensagens de aniversário.
@@ -31,11 +31,11 @@ Gerenciar um cronograma pode ser desafiador, especialmente quando há detalhes q
 ## Tecnologias Utilizadas
 
 -   [Vue.js](https://vuejs.org/): Um poderoso framework JavaScript para construir interfaces de usuário interativas.
-    -   [Vue Router](https://router.vuejs.org/): Para gerenciar a navegação na aplicação.
--   [Ionic Framework](https://ionicframework.com/docs): Uma estrutura que ajuda a desenvolver aplicativos multiplataforma com tecnologias web.
+    -   [Vue Router](https://router.vuejs.org/): Gerenciador de navegação na aplicação.
+-   [Ionic Framework](https://ionicframework.com/docs): Uma estrutura multiplataforma para desenvolver aplicativos mobile com tecnologias web.
 -   [Firebase](https://firebase.google.com/): Utilizado para autenticação, armazenamento de dados (Firestore), hospedagem, funções em nuvem e mensagens/notificações.
--   [Vite](https://vitejs.dev/): Um construtor de projetos frontend rápido e flexível.
-    -   [Vite PWA](https://vite-pwa-org.netlify.app/): Para transformar o aplicativo em uma Progressive Web App.
--   [date-fns](https://date-fns.org/): Uma biblioteca para formatação de datas em JavaScript.
+-   [Vite](https://vitejs.dev/): Um construtor de projetos front-end rápido e flexível.
+    -   [Vite PWA](https://vite-pwa-org.netlify.app/): Transforma o aplicativo em uma [Progressive Web App](https://github.com/IgorFerreiraMoraes/Aprenda-PWA-Vite).
+-   [date-fns](https://date-fns.org/): Uma biblioteca versátil para formatação de datas em JavaScript..
 
 Licença do MIT
