@@ -77,6 +77,7 @@
 
     async function call_set_admin() {
         const new_admin_email = await get_new_admin_email();
+        if (!new_admin_email) return;
 
         const set_admin = httpsCallable(functions, 'set_admin');
         set_admin({ email: new_admin_email }).then(async (result) => {
