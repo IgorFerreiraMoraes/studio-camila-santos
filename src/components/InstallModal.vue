@@ -9,7 +9,7 @@
                     Cancelar
                 </ion-button>
             </ion-buttons>
-            <ion-title>Instale Nosso Aplicativo</ion-title>
+            <ion-title>Aplicativo</ion-title>
         </ion-toolbar>
     </ion-header>
     <ion-content class="ion-padding">
@@ -22,6 +22,7 @@
         </ion-item>
         <ion-button
             @click="show_install_prompt()"
+            class="ion-margin-horizontal"
             color="tertiary"
             expand="block"
         >
@@ -44,7 +45,6 @@
     } from '@ionic/vue';
 
     const props = defineProps(['browser_prompt']);
-    console.log(props.browser_prompt);
 
     function show_install_prompt() {
         props.browser_prompt.prompt();
