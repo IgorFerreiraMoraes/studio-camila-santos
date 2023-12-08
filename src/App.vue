@@ -14,6 +14,8 @@
     import { getMessaging, onMessage } from 'firebase/messaging';
     import { check_user_messaging_token } from './modules/messaging_token';
     import InstallModal from './components/InstallModal.vue';
+    import IosModal from './components/IosModal.vue';
+    import AlternativesModal from './components/AlternativesModal.vue';
 
     let prompt;
     const is_modal_open = ref(false);
@@ -24,30 +26,53 @@
     });
 
     async function check_installation() {
-        if (!user_in_browser()) return;
+        if (!user_can_install()) return;
+
+        if (is_ios() && !('BeforeInstallPromptEvent' in window)) {
+            show_modal(IosModal);
+            return;
+        }
 
         window.addEventListener('beforeinstallprompt', (event) => {
             event.preventDefault();
             prompt = event;
 
             if (!is_modal_open.value) {
-                show_install_modal(prompt);
+                show_modal(InstallModal, {
+                    browser_prompt: prompt,
+                });
                 is_modal_open.value = true;
             }
         });
     }
 
-    function user_in_browser() {
+    function user_can_install() {
+        if (typeof window == 'undefined' || navigator.standalone)
+            return false;
+
+        if (
+            ('serviceWorker' in navigator &&
+                'BeforeInstallPromptEvent' in window) ||
+            is_ios()
+        ) {
+            return true;
+        }
+
+        show_modal(AlternativesModal);
+        return false;
+    }
+
+    function is_ios() {
         return (
-            typeof window !== 'undefined' &&
-            'BeforeInstallPromptEvent' in window
+            /iPad|iPhone|iPod/.test(navigator.userAgent) &&
+            !window.MSStream
         );
     }
 
-    async function show_install_modal(prompt) {
+    async function show_modal(modal_component, modal_props = {}) {
         const modal = await modalController.create({
-            component: InstallModal,
-            componentProps: { browser_prompt: prompt },
+            component: modal_component,
+            componentProps: modal_props,
         });
         modal.present();
     }
