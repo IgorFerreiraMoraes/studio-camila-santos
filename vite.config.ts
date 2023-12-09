@@ -5,12 +5,42 @@ import { VitePWA, VitePWAOptions } from 'vite-plugin-pwa';
 
 const manifest: Partial<VitePWAOptions> = {
     registerType: 'autoUpdate',
-    includeAssets: ['icon.svg'],
+    includeAssets: [
+        'icon.svg',
+        'icon-small.png',
+        'icon-128.png',
+        'icon-256.png',
+        'icon-512.png',
+    ],
     manifest: {
         name: 'Studio Camila Santos',
         short_name: 'Camila Santos',
         description: 'Agende suas sessões no salão com o aplicativo',
         icons: [
+            {
+                src: '/icon-small.png',
+                sizes: '16x16 32x32 58x58 76x76 80x80 87x87',
+                type: 'image/png',
+                purpose: 'any maskable',
+            },
+            {
+                src: '/icon-128.png',
+                sizes: '120x120 128x128',
+                type: 'image/png',
+                purpose: 'any maskable',
+            },
+            {
+                src: '/icon-256.png',
+                sizes: '25x256',
+                type: 'image/png',
+                purpose: 'any maskable',
+            },
+            {
+                src: '/icon-512.png',
+                sizes: '512x512',
+                type: 'image/png',
+                purpose: 'any maskable',
+            },
             {
                 src: '/icon.svg',
                 sizes: 'any',
