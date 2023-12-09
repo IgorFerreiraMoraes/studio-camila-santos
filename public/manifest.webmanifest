@@ -2,6 +2,7 @@
     "name": "Studio Camila Santos",
     "short_name": "Camila Santos",
     "description": "Agende suas sessões no salão com o aplicativo",
+    "lang": "pt-BR",
     "icons": [
         {
             "src": "/icon-small.png",
