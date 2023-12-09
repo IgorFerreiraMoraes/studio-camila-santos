@@ -47,7 +47,11 @@
     }
 
     function user_can_install() {
-        if (typeof window == 'undefined' || navigator.standalone)
+        if (
+            typeof window == 'undefined' ||
+            navigator.standalone ||
+            window.matchMedia('(display-mode: standalone)').matches
+        )
             return false;
 
         if (
@@ -90,7 +94,7 @@
             };
             const notification = new Notification(
                 notification_title,
-                notification_options,
+                notification_options
             );
         });
     }
