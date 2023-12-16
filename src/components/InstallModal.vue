@@ -48,6 +48,7 @@
 
     function show_install_prompt() {
         props.browser_prompt.prompt();
+        cancel();
     }
 
     function cancel() {
