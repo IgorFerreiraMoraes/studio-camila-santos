@@ -25,8 +25,11 @@
                 <br />
                 <br />
 
-                2. Se não encontrar, considere instalar o Google Chrome,
-                que costuma oferecer melhor compatibilidade.
+                2. Se não encontrar, considere instalar o
+                <a
+                    href="https://play.google.com/store/apps/details?id=com.android.chrome"
+                    >Google Chrome</a
+                >, que costuma oferecer melhor compatibilidade.
 
                 <br />
                 <br />
