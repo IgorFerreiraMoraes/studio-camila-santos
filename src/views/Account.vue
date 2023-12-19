@@ -38,6 +38,28 @@
                 >
                     <ion-label>Incluir Administradora</ion-label>
                 </ion-item>
+                <ion-item
+                    button
+                    href="https://wa.me/5511910604946"
+                    target="_blank"
+                >
+                    <ion-icon
+                        :icon="logoWhatsapp"
+                        size="small"
+                    ></ion-icon>
+                    Entrar em contato
+                </ion-item>
+                <ion-item
+                    button
+                    href="https://www.instagram.com/studiocamila_santos/"
+                    target="_blank"
+                >
+                    <ion-icon
+                        :icon="logoInstagram"
+                        size="small"
+                    ></ion-icon>
+                    Instagram
+                </ion-item>
             </ion-list>
         </ion-content>
     </ion-page>
@@ -58,8 +80,10 @@
         IonList,
         IonItem,
         IonLabel,
+        IonIcon,
         alertController,
     } from '@ionic/vue';
+    import { logoInstagram, logoWhatsapp } from 'ionicons/icons';
     import { useRouter } from 'vue-router';
     import { signOut } from 'firebase/auth';
     import { httpsCallable } from 'firebase/functions';
@@ -137,3 +161,8 @@
         message_alert.present();
     }
 </script>
+<style scoped>
+    ion-icon {
+        margin-right: 6px;
+    }
+</style>
