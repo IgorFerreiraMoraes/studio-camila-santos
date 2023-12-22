@@ -49,6 +49,20 @@
                     ></ion-icon>
                     Entrar em contato
                 </ion-item>
+<<<<<<< HEAD
+=======
+                <ion-item
+                    button
+                    href="https://www.instagram.com/studiocamila_santos/"
+                    target="_blank"
+                >
+                    <ion-icon
+                        :icon="logoInstagram"
+                        size="small"
+                    ></ion-icon>
+                    Instagram
+                </ion-item>
+>>>>>>> ff8912e4486ce67df64f687bd4376f5138259bbc
             </ion-list>
         </ion-content>
     </ion-page>
