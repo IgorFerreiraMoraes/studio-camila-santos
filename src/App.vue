@@ -8,12 +8,21 @@
     import { onMounted } from 'vue';
     import { IonApp, IonRouterOutlet } from '@ionic/vue';
     import { getMessaging, onMessage } from 'firebase/messaging';
+    import { onAuthStateChanged } from 'firebase/auth';
+    import { auth } from './firebase';
     import { check_user_messaging_token } from './modules/messaging_token';
     import { check_installation } from './modules/installation';
+    import { check_birthday } from './modules/birthday';
 
     onMounted(() => {
-        check_installation();
         setup_message_handling();
+        check_installation();
+    });
+
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            check_birthday();
+        }
     });
 
     function setup_message_handling() {
