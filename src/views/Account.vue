@@ -36,7 +36,21 @@
                     @click="call_set_admin()"
                     v-if="is_user_admin"
                 >
-                    <ion-label>Incluir Administradora</ion-label>
+                    <ion-icon
+                        :icon="personAddOutline"
+                        size="small"
+                    ></ion-icon>
+                    Incluir Administradora
+                </ion-item>
+                <ion-item
+                    button
+                    @click="show_birthday_alert()"
+                >
+                    <ion-icon
+                        :icon="balloonOutline"
+                        size="small"
+                    ></ion-icon>
+                    Mudar Aniversário
                 </ion-item>
                 <ion-item
                     button
@@ -68,16 +82,20 @@
         IonButton,
         IonList,
         IonItem,
-        IonLabel,
         IonIcon,
         alertController,
     } from '@ionic/vue';
-    import { logoInstagram, logoWhatsapp } from 'ionicons/icons';
+    import {
+        balloonOutline,
+        logoWhatsapp,
+        personAddOutline,
+    } from 'ionicons/icons';
     import { useRouter } from 'vue-router';
     import { signOut } from 'firebase/auth';
     import { httpsCallable } from 'firebase/functions';
     import { auth, functions } from '../firebase';
     import { is_user_admin } from '../modules/auth';
+    import { show_birthday_alert } from '../modules/birthday';
 
     const user_name = auth.currentUser.displayName;
     const router = useRouter();
