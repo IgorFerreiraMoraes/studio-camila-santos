@@ -20,6 +20,7 @@
         "date-fns-tz": "^2.0.0",
         "firebase": "^10.4.0",
         "ionicons": "^7.0.0",
+        "libphonenumber-js": "^1.10.52",
         "vue": "^3.2.45",
         "vue-router": "^4.1.6"
     },
