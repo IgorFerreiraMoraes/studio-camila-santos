@@ -1,8 +1,0 @@
-{
-    "appId": "ionic.app.base",
-    "appName": "ionic-app-base",
-    "webDir": "dist",
-    "server": {
-        "androidScheme": "https"
-    }
-}
