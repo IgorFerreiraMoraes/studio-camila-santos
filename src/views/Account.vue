@@ -54,6 +54,16 @@
                 </ion-item>
                 <ion-item
                     button
+                    @click="show_phone_alert()"
+                >
+                    <ion-icon
+                        :icon="callOutline"
+                        size="small"
+                    ></ion-icon>
+                    Mudar Número
+                </ion-item>
+                <ion-item
+                    button
                     href="https://wa.me/5511910604946"
                     target="_blank"
                 >
@@ -88,6 +98,7 @@
     import {
         balloonOutline,
         logoWhatsapp,
+        callOutline,
         personAddOutline,
     } from 'ionicons/icons';
     import { useRouter } from 'vue-router';
@@ -96,6 +107,7 @@
     import { auth, functions } from '../firebase';
     import { is_user_admin } from '../modules/auth';
     import { show_birthday_alert } from '../modules/birthday';
+    import { show_phone_alert } from '../modules/phone_number';
 
     const user_name = auth.currentUser.displayName;
     const router = useRouter();
