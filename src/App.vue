@@ -13,6 +13,7 @@
     import { check_user_messaging_token } from './modules/messaging_token';
     import { check_installation } from './modules/installation';
     import { check_birthday } from './modules/birthday';
+    import {check_phone} from './modules/phone_number'
 
     onMounted(() => {
         setup_message_handling();
@@ -22,6 +23,7 @@
     onAuthStateChanged(auth, (user) => {
         if (user) {
             check_birthday();
+            check_phone();
         }
     });
 

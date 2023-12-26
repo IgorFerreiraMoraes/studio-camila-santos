@@ -63,7 +63,7 @@ function create_birthday_alert() {
 }
 
 async function update_user_doc(data) {
-    if (!is_valid_date(data.month, data.day)) return;
+    if (!is_valid_date(data.month, data.day)) return false;
 
     const user = auth.currentUser;
     const user_doc = doc(database, 'users', user.uid);
