@@ -23,7 +23,11 @@
                 aparecer aqui!
             </p>
             <ion-list v-else>
-                <ion-item v-for="appointment in appointments">
+                <ion-item
+                    button
+                    v-for="appointment in appointments"
+                    @click="show_phone(appointment)"
+                >
                     <ion-label>
                         <span class="date">
                             {{
@@ -82,9 +86,12 @@
         IonTitle,
         IonToolbar,
         IonHeader,
+        alertController,
     } from '@ionic/vue';
     import { reactive } from 'vue';
     import {
+        doc,
+        getDoc,
         collection,
         onSnapshot,
         orderBy,
@@ -94,6 +101,7 @@
     import { database, auth } from '../firebase.js';
     import { format } from 'date-fns';
     import { ptBR } from 'date-fns/locale';
+    import { parsePhoneNumber } from 'libphonenumber-js/mobile';
 
     const appointments = reactive([]);
     const id = auth.currentUser.uid;
@@ -114,6 +122,36 @@
             });
         },
     );
+
+    async function show_phone(appointment) {
+        const docRef = doc(database, 'users', appointment.client_id);
+        const docSnap = await getDoc(docRef);
+
+        let message = `${
+            docSnap.data().name
+        } não informou o número ainda`;
+
+        if (docSnap.data().phone) {
+            const formatted_phone = parsePhoneNumber(
+                docSnap.data().phone,
+                'BR',
+            ).formatNational();
+            message = `O número de ${
+                docSnap.data().name
+            } é ${formatted_phone}`;
+        }
+
+        show_alert(message);
+    }
+
+    async function show_alert(message) {
+        const alert = await alertController.create({
+            header: 'Telefone',
+            message: message,
+            buttons: ['Entendido'],
+        });
+        await alert.present();
+    }
 </script>
 <style scoped>
     .appointment-info > * {
