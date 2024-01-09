@@ -143,9 +143,27 @@
     }
 
     async function render_slots() {
+        const day_of_week = props.selected_day.getDay();
+        let start_hour = 7;
+        let ending_hour = 7;
+        console.log(day_of_week);
+        if (day_of_week == 0) {
+            ending_hour = 7;
+        } else if (day_of_week == 1 || day_of_week == 2) {
+            ending_hour = 18;
+        } else if (
+            day_of_week == 3 ||
+            day_of_week == 4 ||
+            day_of_week == 5
+        ) {
+            ending_hour = 19;
+        } else if (day_of_week == 6) {
+            ending_hour = 17;
+        }
+
         available_slots.value = await generate_slots(
-            7,
-            19,
+            start_hour,
+            ending_hour,
             selected_service.value.duration,
         );
     }
@@ -160,7 +178,6 @@
         const all_slots_in_interval = eachMinuteOfInterval(interval, {
             step: slot_duration_minutes,
         });
-        all_slots_in_interval.pop(); // a função acima sempre gera um slot a mais
 
         const existing_appointments = await fetch_existing_appointments(
             props.selected_day,
