@@ -9,7 +9,7 @@ admin.initializeApp({
 });
 
 exports.delete_past_appointments = onSchedule(
-    'every day 22:00',
+    'every day 23:59',
     async (event) => {
         const now = new Date(
             new Date().toLocaleString({
@@ -83,7 +83,7 @@ exports.send_reminder_message = onSchedule(
         const today_appointments_query = appointments.where(
             'date',
             '==',
-            today.toString(),
+            today.getTime(),
         );
         const today_appointments = await today_appointments_query.get();
 
