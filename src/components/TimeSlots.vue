@@ -146,7 +146,6 @@
         const day_of_week = props.selected_day.getDay();
         let start_hour = 7;
         let ending_hour = 7;
-        console.log(day_of_week);
         if (day_of_week == 0) {
             ending_hour = 7;
         } else if (day_of_week == 1 || day_of_week == 2) {
