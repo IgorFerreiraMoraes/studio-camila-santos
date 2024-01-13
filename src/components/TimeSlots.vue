@@ -99,7 +99,7 @@
         IonToolbar,
         alertController,
     } from '@ionic/vue';
-    import { addOutline } from 'ionicons/icons';
+    import { checkmarkOutline } from 'ionicons/icons';
     import { ref, watch } from 'vue';
     import { useRouter } from 'vue-router';
     import { staff_reference } from '../modules/bussiness_reference';
