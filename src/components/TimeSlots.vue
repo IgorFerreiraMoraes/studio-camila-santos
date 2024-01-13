@@ -84,7 +84,7 @@
             color="tertiary"
             @click="confirm_appointment()"
         >
-            <ion-icon :icon="addOutline"></ion-icon>
+            <ion-icon :icon="checkmarkOutline"></ion-icon>
         </ion-fab-button>
     </ion-fab>
 </template>
