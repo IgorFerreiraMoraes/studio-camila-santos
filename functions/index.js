@@ -43,12 +43,14 @@ exports.send_birthday_message = onSchedule(
 
         const users = admin.firestore().collection('users');
         const birthday_users_query = users
-            .where('birth_day', '==', today.getDate().toString())
-            .where(
-                'birth_month',
-                '==',
+            .where('birth_day', 'in', [
+                today.getDate().toString(),
+                '0' + today.getDate().toString(),
+            ])
+            .where('birth_month', 'in', [
                 (today.getMonth() + 1).toString(),
-            );
+                '0' + (today.getMonth() + 1).toString(),
+            ]);
         const birthday_users = await birthday_users_query.get();
 
         birthday_users.forEach((doc) => {
