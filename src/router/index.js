@@ -40,6 +40,14 @@ const routes = [
                     requiresAuth: true,
                 },
             },
+            {
+                path: 'privacidade',
+                name: 'Privacy',
+                component: () => import('../views/Privacy.vue'),
+                meta: {
+                    requiresAuth: false,
+                },
+            },
         ],
         redirect: '/inicio',
     },
