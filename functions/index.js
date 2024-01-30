@@ -4,6 +4,7 @@ const { onSchedule } = require('firebase-functions/v2/scheduler');
 // The Firebase Admin SDK to access Firestore.
 const admin = require('firebase-admin');
 const { onCall } = require('firebase-functions/v2/https');
+const { format } = require('date-fns');
 admin.initializeApp({
     credential: admin.credential.applicationDefault(),
 });
@@ -70,12 +71,8 @@ exports.send_birthday_message = onSchedule(
 exports.send_reminder_message = onSchedule(
     'every day 08:00',
     async (event) => {
-        const today = new Date(
-            new Date().toLocaleString({
-                timeZone: 'America/Sao_Paulo',
-            }),
-        );
-        today.setHours(0, 0, 0, 0);
+        const today = new Date();
+        today.setHours(3, 0, 0, 0);
 
         const appointments = admin
             .firestore()
@@ -83,13 +80,16 @@ exports.send_reminder_message = onSchedule(
         const today_appointments_query = appointments.where(
             'date',
             '==',
-            today.getTime(),
+            today,
         );
         const today_appointments = await today_appointments_query.get();
 
         today_appointments.forEach(async (doc) => {
-            const appointment_time = doc.data().start_time;
-            const appointment_hour = `${appointment_time.getHours()}:${appointment_time.getMinutes()}`;
+            const appointment_time = doc.data().start_time.toDate();
+            const appointment_hour = `${format(
+                appointment_time,
+                'kk:mm',
+            )}`;
 
             const client_id = doc.data().client_id;
             const client_reference = admin
