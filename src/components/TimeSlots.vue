@@ -304,15 +304,15 @@
             })}`,
             buttons: [
                 {
+                    text: 'Não',
+                    role: 'cancel',
+                },
+                {
                     text: 'Sim',
                     role: 'submit',
                     handler: async () => {
                         make_appointment();
                     },
-                },
-                {
-                    text: 'Não',
-                    role: 'cancel',
                 },
             ],
         });
