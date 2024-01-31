@@ -73,6 +73,17 @@
                     ></ion-icon>
                     Entrar em contato
                 </ion-item>
+                <ion-item
+                    @click="router.push('/deletar-usuario')"
+                    color="danger"
+                    button
+                >
+                    <ion-icon
+                        :icon="warningOutline"
+                        size="small"
+                    ></ion-icon>
+                    DELETAR CONTA
+                </ion-item>
             </ion-list>
         </ion-content>
     </ion-page>
@@ -100,6 +111,7 @@
         logoWhatsapp,
         callOutline,
         personAddOutline,
+        warningOutline,
     } from 'ionicons/icons';
     import { useRouter } from 'vue-router';
     import { signOut } from 'firebase/auth';

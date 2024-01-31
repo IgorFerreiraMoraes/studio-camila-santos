@@ -41,6 +41,14 @@ const routes = [
                 },
             },
             {
+                path: 'deletar-usuario',
+                name: 'Delete User',
+                component: () => import('../views/DeleteUser.vue'),
+                meta: {
+                    requiresAuth: true,
+                },
+            },
+            {
                 path: 'privacidade',
                 name: 'Privacy',
                 component: () => import('../views/Privacy.vue'),
