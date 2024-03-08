@@ -26,7 +26,6 @@
     "devDependencies": {
         "@vitejs/plugin-vue": "^4.0.0",
         "@vue/test-utils": "^2.3.0",
-        "cypress": "^13.2.0",
         "eslint": "^8.35.0",
         "eslint-plugin-vue": "^9.9.0",
         "firebase-admin": "^11.11.0",
