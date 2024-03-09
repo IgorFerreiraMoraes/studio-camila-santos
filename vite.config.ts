@@ -4,6 +4,7 @@ import { defineConfig } from 'vite';
 import { VitePWA, VitePWAOptions } from 'vite-plugin-pwa';
 
 const manifest: Partial<VitePWAOptions> = {
+    strategies: 'injectManifest',
     registerType: 'autoUpdate',
     includeAssets: [
         'icon.svg',
