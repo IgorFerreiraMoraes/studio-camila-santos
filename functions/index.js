@@ -4,19 +4,18 @@ const { onSchedule } = require('firebase-functions/v2/scheduler');
 // The Firebase Admin SDK to access Firestore.
 const admin = require('firebase-admin');
 const { onCall } = require('firebase-functions/v2/https');
-const { format } = require('date-fns');
+const { format, subHours } = require('date-fns');
 admin.initializeApp({
     credential: admin.credential.applicationDefault(),
 });
 
 exports.delete_past_appointments = onSchedule(
-    'every day 23:59',
+    {
+        timeZone: 'America/Sao_Paulo',
+        schedule: 'every day 23:59',
+    },
     async (event) => {
-        const now = new Date(
-            new Date().toLocaleString({
-                timeZone: 'America/Sao_Paulo',
-            }),
-        );
+        const now = new Date();
         const appointments = admin
             .firestore()
             .collection('appointments');
@@ -38,7 +37,10 @@ exports.delete_past_appointments = onSchedule(
 );
 
 exports.send_birthday_message = onSchedule(
-    'every day 10:00',
+    {
+        timeZone: 'America/Sao_Paulo',
+        schedule: 'every day 07:00',
+    },
     async (event) => {
         const today = new Date();
 
@@ -69,7 +71,10 @@ exports.send_birthday_message = onSchedule(
 );
 
 exports.send_reminder_message = onSchedule(
-    'every day 08:00',
+    {
+        timeZone: 'America/Sao_Paulo',
+        schedule: 'every day 05:00',
+    },
     async (event) => {
         const today = new Date();
         today.setHours(3, 0, 0, 0);
@@ -85,7 +90,10 @@ exports.send_reminder_message = onSchedule(
         const today_appointments = await today_appointments_query.get();
 
         today_appointments.forEach(async (doc) => {
-            const appointment_time = doc.data().start_time.toDate();
+            const appointment_time = subHours(
+                doc.data().start_time.toDate(),
+                3,
+            );
             const appointment_hour = `${format(
                 appointment_time,
                 'kk:mm',
