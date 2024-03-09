@@ -46,12 +46,7 @@
         >
             <p>
                 {{ format(slot, 'kk:mm') }} -
-                {{
-                    format(
-                        addMinutes(slot, selected_service.duration),
-                        'kk:mm',
-                    )
-                }}
+                {{ format(addMinutes(slot, 60), 'kk:mm') }}
             </p>
         </li>
     </ul>
@@ -163,7 +158,7 @@
         available_slots.value = await generate_slots(
             start_hour,
             ending_hour,
-            selected_service.value.duration,
+            60,
         );
     }
 
@@ -257,6 +252,22 @@
             return true;
         }
         if (!existing_appointments.length) return false;
+
+        const lunch_start = new Date(props.selected_day);
+        const lunch_end = new Date(props.selected_day);
+        lunch_start.setHours(12, 0, 0, 0);
+        lunch_end.setHours(13, 0, 0, 0);
+
+        if (
+            are_intervals_overlapping(
+                slot_start,
+                slot_end,
+                Timestamp.fromDate(lunch_start).seconds,
+                Timestamp.fromDate(lunch_end).seconds,
+            )
+        ) {
+            return true;
+        }
 
         return existing_appointments.some((appointment) =>
             are_intervals_overlapping(
