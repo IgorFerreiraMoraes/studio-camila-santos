@@ -46,7 +46,12 @@
         >
             <p>
                 {{ format(slot, 'kk:mm') }} -
-                {{ format(addMinutes(slot, 60), 'kk:mm') }}
+                {{
+                    format(
+                        addMinutes(slot, selected_service.duration),
+                        'kk:mm',
+                    )
+                }}
             </p>
         </li>
     </ul>
@@ -158,7 +163,7 @@
         available_slots.value = await generate_slots(
             start_hour,
             ending_hour,
-            60,
+            selected_service.duration,
         );
     }
 
