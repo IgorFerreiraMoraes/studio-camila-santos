@@ -163,7 +163,7 @@
         available_slots.value = await generate_slots(
             start_hour,
             ending_hour,
-            selected_service.duration,
+            selected_service.value.duration,
         );
     }
 
