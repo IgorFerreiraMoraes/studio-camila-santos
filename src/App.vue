@@ -7,10 +7,8 @@
 <script setup>
     import { onMounted } from 'vue';
     import { IonApp, IonRouterOutlet } from '@ionic/vue';
-    import { getMessaging, onMessage } from 'firebase/messaging';
     import { onAuthStateChanged } from 'firebase/auth';
-    import { auth } from './firebase';
-    import { check_user_messaging_token } from './modules/messaging_token';
+    import { auth, setup_message_handling } from './firebase';
     import { check_installation } from './modules/installation';
     import { check_birthday } from './modules/birthday';
     import { check_phone } from './modules/phone_number';
@@ -26,22 +24,4 @@
             check_phone();
         }
     });
-
-    function setup_message_handling() {
-        check_user_messaging_token();
-
-        const messaging = getMessaging();
-
-        onMessage(messaging, (payload) => {
-            const notification_title = payload.notification.title;
-            const notification_options = {
-                body: payload.notification.body,
-                image: payload.notification.image,
-            };
-            const notification = new Notification(
-                notification_title,
-                notification_options,
-            );
-        });
-    }
 </script>

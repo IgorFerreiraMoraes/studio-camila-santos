@@ -1,12 +1,13 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAuth } from 'firebase/auth';
-import { getMessaging } from 'firebase/messaging';
+import { getMessaging, onMessage } from 'firebase/messaging';
 import { getFunctions } from 'firebase/functions';
 import {
     initializeAppCheck,
     ReCaptchaV3Provider,
 } from 'firebase/app-check';
+import { check_user_messaging_token } from './modules/messaging_token';
 
 const firebaseConfig = {
     apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
@@ -29,3 +30,20 @@ export const auth = getAuth(app);
 export const database = getFirestore(app);
 export const messaging = getMessaging(app);
 export const functions = getFunctions(app);
+
+export function setup_message_handling() {
+    check_user_messaging_token();
+    configure_message_handling();
+}
+
+function configure_message_handling() {
+    const messaging = getMessaging();
+
+    onMessage(messaging, handle_message);
+}
+
+function handle_message(payload) {
+    const { title, body, image } = payload.notification;
+    const notification_options = { body, image };
+    const notification = new Notification(title, notification_options);
+}

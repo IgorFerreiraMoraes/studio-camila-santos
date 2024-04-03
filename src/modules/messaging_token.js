@@ -23,7 +23,7 @@ onAuthStateChanged(auth, (user) => {
 });
 
 async function write_user_token(token) {
-    const user_existing_token = await user_has_messaging_token;
+    const user_existing_token = user_has_messaging_token;
     if (!user_existing_token || user_existing_token == token) return;
 
     await updateDoc(doc(database, 'users', user_id), {
