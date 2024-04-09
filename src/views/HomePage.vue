@@ -30,8 +30,8 @@
         IonToolbar,
     } from '@ionic/vue';
     import { ref } from 'vue';
-    import TimeSlots from '../components/TimeSlots.vue';
     import DatePicker from '../components/DatePicker.vue';
+    import TimeSlots from '../components/TimeSlots/TimeSlots.vue';
 
     const selected_day = ref();
 </script>
