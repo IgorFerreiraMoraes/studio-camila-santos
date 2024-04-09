@@ -122,6 +122,12 @@
     const selected_service = ref();
     const selected_staff = ref();
 
+    onMounted(() => {
+        monitor_appointments(() => {
+            if (selected_service.value) render_slots();
+        });
+    });
+
     watch(selected_service, async () => {
         if (selected_service.value) render_slots();
     });
@@ -136,6 +142,22 @@
     function handle_slot_selection(slot) {
         if (!selected_service.value) return;
         selected_slot.value = slot;
+    }
+
+    function monitor_appointments(callback) {
+        const query = collection(database, 'appointments');
+        onSnapshot(query, (snapshot) => {
+            const new_appointment = snapshot
+                .docChanges()
+                .find((change) => change.type === 'added');
+            const removed_appointment = snapshot
+                .docChanges()
+                .find((change) => change.type === 'removed');
+
+            if (new_appointment || removed_appointment) {
+                callback();
+            }
+        });
     }
 
     async function render_slots() {
