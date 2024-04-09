@@ -1,9 +1,6 @@
 import { getToken } from 'firebase/messaging';
 import { database, messaging, auth } from '../firebase';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { onAuthStateChanged } from 'firebase/auth';
-
-let user_id;
 
 export async function check_user_messaging_token() {
     const current_token = await getToken(messaging, {
@@ -12,28 +9,24 @@ export async function check_user_messaging_token() {
     });
 
     if (!current_token) Notification.requestPermission();
-    if (!user_id) return;
+    if (!auth.currentUser.uid) return;
     write_user_token(current_token);
 }
-
-onAuthStateChanged(auth, (user) => {
-    if (!user) return;
-
-    user_id = user.uid;
-});
 
 async function write_user_token(token) {
     const user_existing_token = user_has_messaging_token;
     if (!user_existing_token || user_existing_token == token) return;
 
-    await updateDoc(doc(database, 'users', user_id), {
+    await updateDoc(doc(database, 'users', auth.currentUser.uid), {
         messaging_token: token,
     });
 }
 async function user_has_messaging_token() {
-    if (!user_id) return false;
+    if (!auth.currentUser.uid) return false;
 
-    const user_document = await getDoc(doc(database, 'users', user_id));
+    const user_document = await getDoc(
+        doc(database, 'users', auth.currentUser.uid),
+    );
     if (!user_document.exists()) return false;
 
     return user_document.data().messaging_token;
